@@ -20,4 +20,6 @@ Route::get('/', function () {
     return view('pages.app.homepage.home');
 });
 
+Route::view('artigo','pages.app.post.post');
+
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
