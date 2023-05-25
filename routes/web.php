@@ -1,7 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\PostController;
+use Illuminate\Support\Facades\{
+    Auth,
+    Route
+};
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +23,17 @@ Route::get('/', function () {
     return view('pages.app.homepage.home');
 });
 
-Route::view('artigo','pages.app.post.post');
+Route::view('artigo', 'pages.app.post.post');
+
+Route::middleware('auth')->prefix('painel')->group(function () {
+    Route::prefix('artigos')->group(function () {
+        Route::view('listar', 'pages.admin.post.listing')->name('admin.post.index');
+        Route::view('criar', 'pages.admin.post.form')->name('admin.post.create');
+
+        Route::controller(PostController::class)->group(function () {
+            Route::post('', 'store')->name('admin.post.store');
+        });
+    });
+});
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
