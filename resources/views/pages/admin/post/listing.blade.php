@@ -31,8 +31,12 @@
                             <input class="form-check-input" type="checkbox" role="switch"/>
                         </div>
 
-                        <a class="btn btn-sm btn-outline-warning"><i class="fa-regular fa-pen-to-square"></i></a>
-                        <a class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></a>
+                        <a class="btn btn-sm btn-outline-warning" href="{{route('admin.post.edit', $item->id)}}">
+                            <i class="fa-regular fa-pen-to-square"></i>
+                        </a>
+                        <a class="btn btn-sm btn-outline-danger">
+                            <i class="fa-solid fa-trash"></i>
+                        </a>
                     </li>
                 </ul>
             @endforeach

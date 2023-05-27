@@ -31,7 +31,10 @@ Route::middleware('auth')->prefix('painel')->group(function () {
 
         Route::controller(PostController::class)->group(function () {
             Route::get('listar', 'index')->name('admin.post.index');
+            Route::get('editar/{post}', 'edit')->name('admin.post.edit');
+
             Route::post('', 'store')->name('admin.post.store');
+            Route::put('{post}', 'update')->name('admin.post.update');
         });
     });
 });

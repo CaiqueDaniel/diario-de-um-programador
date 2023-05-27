@@ -4,11 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Post\PostRequest;
-use App\Models\Post;
-use App\Models\User;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
+use App\Models\{
+    Post,
+    User
+};
 
 class PostController extends Controller
 {
@@ -32,38 +33,18 @@ class PostController extends Controller
         return redirect()->route('admin.post.index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function edit(Post $post): View
     {
-        //
+        return view('pages.admin.post.form', compact('post'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function update(PostRequest $request, Post $post): RedirectResponse
     {
-        //
-    }
+        $post->fill($request->validated())->saveOrFail();
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
+        session()->flash('message', 'Artigo editado com sucesso');
+
+        return redirect()->route('admin.post.index');
     }
 
     /**

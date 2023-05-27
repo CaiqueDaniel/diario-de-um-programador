@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
+ * @property int $id
  * @property string $title
  * @property string $subtitle
  * @property string $article
