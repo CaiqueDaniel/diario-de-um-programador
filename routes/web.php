@@ -27,10 +27,10 @@ Route::view('artigo', 'pages.app.post.post');
 
 Route::middleware('auth')->prefix('painel')->group(function () {
     Route::prefix('artigos')->group(function () {
-        Route::view('listar', 'pages.admin.post.listing')->name('admin.post.index');
         Route::view('criar', 'pages.admin.post.form')->name('admin.post.create');
 
         Route::controller(PostController::class)->group(function () {
+            Route::get('listar', 'index')->name('admin.post.index');
             Route::post('', 'store')->name('admin.post.store');
         });
     });

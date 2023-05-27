@@ -8,17 +8,15 @@ use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class PostController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function index(): View
     {
-        //
+        $response = Post::findAll();
+
+        return view('pages.admin.post.listing', compact('response'));
     }
 
     public function store(PostRequest $request): RedirectResponse
