@@ -7,10 +7,31 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
-.listing{
-    max-height: 60vh;
+// FontAwesome
+@import '~@fortawesome/fontawesome-free/css/all.css';
+@import '~@fortawesome/fontawesome-free/css/regular.css';
 
-    .header{
+.listing {
+    height: 70vh;
+    overflow-y: auto;
+
+    .header {
         font-weight: bold;
     }
+}
+
+*::-webkit-scrollbar {
+    width: 5px;
+}
+
+*::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+*::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }

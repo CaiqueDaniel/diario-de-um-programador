@@ -5,7 +5,7 @@
         <x-alerts.success/>
 
         <div class="listing">
-            <ul class="list-group list-group-horizontal header mb-3 d-none d-md-flex">
+            <ul class="list-group list-group-horizontal header mb-3 d-none d-md-flex sticky-top">
                 <li class="list-group-item col-5">{{__('Title')}}</li>
                 <li class="list-group-item col-3">{{__('Author')}}</li>
                 <li class="list-group-item col-2">{{__('Published At')}}</li>
@@ -26,16 +26,20 @@
                         <b class="d-md-none">{{__('Published At')}}: </b>{{$item->created_at}}
                     </li>
 
-                    <li class="list-group-item col-md-2">
+                    <li class="list-group-item col-md-2 d-flex align-items-center justify-content-evenly">
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" role="switch"/>
                         </div>
 
-                        <a class="btn btn-sm btn-outline-warning">Editar</a>
-                        <a class="btn btn-sm btn-outline-danger">Excluir</a>
+                        <a class="btn btn-sm btn-outline-warning"><i class="fa-regular fa-pen-to-square"></i></a>
+                        <a class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></a>
                     </li>
                 </ul>
             @endforeach
+        </div>
+
+        <div class="d-flex justify-content-center">
+            {!! $response->links() !!}
         </div>
     </div>
 @endsection

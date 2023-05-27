@@ -17,7 +17,7 @@ class Post extends Model
 {
     use HasFactory;
 
-    const LIMIT = 30;
+    private const LIMIT = 30;
 
     protected $fillable = ['title', 'subtitle', 'article'];
 
@@ -26,7 +26,7 @@ class Post extends Model
         return $this->belongsTo(User::class, 'author');
     }
 
-    public static function findAll(int $offset = 0, string $search = null): LengthAwarePaginator
+    public static function findAll(string $search = null): LengthAwarePaginator
     {
         /** @var Builder $builder */
         $builder = static::select('*');
@@ -34,6 +34,6 @@ class Post extends Model
         if (!empty($search))
             $builder->where('title', 'like', '%' . $search . '%');
 
-        return $builder->with('author')->limit(self::LIMIT)->offset($offset * self::LIMIT)->paginate();
+        return $builder->with('author')->paginate(self::LIMIT);
     }
 }
