@@ -31,7 +31,7 @@ class Post extends Model
     public static function findAll(string $search = null): LengthAwarePaginator
     {
         /** @var Builder $builder */
-        $builder = static::select('*');
+        $builder = static::withTrashed();
 
         if (!empty($search))
             $builder->where('title', 'like', '%' . $search . '%');

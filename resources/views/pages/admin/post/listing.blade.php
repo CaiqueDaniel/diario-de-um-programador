@@ -40,15 +40,27 @@
 
                         <li class="list-group-item col-md-2 d-flex align-items-center justify-content-evenly">
                             <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" role="switch"/>
+                                <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    data-restore="{{route('admin.post.restore', ['post' => $item->id])}}"
+                                    data-trash="{{route('admin.post.trash', ['post' => $item->id])}}"
+                                    role="switch" {{$item->trashed()?'':'checked'}}
+                                />
                             </div>
 
                             <a class="btn btn-sm btn-outline-warning" href="{{route('admin.post.edit', $item->id)}}">
                                 <i class="fa-regular fa-pen-to-square"></i>
                             </a>
-                            <a class="btn btn-sm btn-outline-danger">
-                                <i class="fa-solid fa-trash"></i>
-                            </a>
+
+                            <form action="{{ route('admin.post.destroy', $item) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </form>
                         </li>
                     </ul>
                 @endforeach

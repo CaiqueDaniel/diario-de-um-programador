@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Post\PostRequest;
 use Illuminate\Http\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Illuminate\View\View;
 use App\Models\{
     Post,
@@ -47,14 +48,26 @@ class PostController extends Controller
         return redirect()->route('admin.post.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function trash(Post $post): Response
     {
-        //
+        $post->delete();
+
+        return response(null);
+    }
+
+    public function restore(Post $post): Response
+    {
+        $post->restore();
+
+        return response(null);
+    }
+
+    public function destroy(Post $post): RedirectResponse
+    {
+        $post->forceDelete();
+
+        session()->flash('message', 'Artigo removido com sucesso');
+
+        return redirect()->route('admin.post.index');
     }
 }

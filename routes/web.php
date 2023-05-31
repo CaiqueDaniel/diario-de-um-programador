@@ -30,11 +30,16 @@ Route::middleware('auth')->prefix('painel')->group(function () {
         Route::view('criar', 'pages.admin.post.form')->name('admin.post.create');
 
         Route::controller(PostController::class)->group(function () {
-            Route::get('listar', 'index')->name('admin.post.index');
-            Route::get('editar/{post}', 'edit')->name('admin.post.edit');
+            Route::get('listar', 'index')->name('admin.post.index')->withTrashed();
+            Route::get('editar/{post}', 'edit')->name('admin.post.edit')->withTrashed();
 
             Route::post('', 'store')->name('admin.post.store');
-            Route::put('{post}', 'update')->name('admin.post.update');
+            Route::put('{post}', 'update')->name('admin.post.update')->withTrashed();
+
+            Route::patch('{post}/desativar', 'trash')->name('admin.post.trash')->withTrashed();
+            Route::patch('{post}/ativar', 'restore')->name('admin.post.restore')->withTrashed();
+
+            Route::delete('{post}', 'destroy')->name('admin.post.destroy')->withTrashed();
         });
     });
 });
