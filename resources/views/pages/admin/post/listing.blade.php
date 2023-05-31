@@ -35,7 +35,7 @@
                         </li>
 
                         <li class="list-group-item col-md-2">
-                            <b class="d-md-none">{{__('Published At')}}: </b>{{$item->created_at}}
+                            <b class="d-md-none">{{__('Published At')}}: </b>@datetime($item->created_at)
                         </li>
 
                         <li class="list-group-item col-md-2 d-flex align-items-center justify-content-evenly">
