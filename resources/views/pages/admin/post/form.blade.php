@@ -21,7 +21,7 @@
                     <div class="mb-3">
                         <label for="title" class="form-label">{{__('Title')}}</label>
                         <input type="text" name="title" class="form-control" id="title"
-                               value="{{old('title') ?? $post->title}}" required>
+                               value="{{$post->title ?? old('title')}}" required>
 
                         <x-alerts.invalid-field field="title"/>
                     </div>
@@ -29,7 +29,7 @@
                     <div class="mb-3">
                         <label for="subtitle" class="form-label">{{__('Subtitle')}}</label>
                         <textarea class="form-control" name="subtitle" id="subtitle" rows="3"
-                                  required>{{old('subtitle') ?? $post->subtitle}}</textarea>
+                                  required>{{$post->subtitle ?? old('subtitle') }}</textarea>
 
                         <x-alerts.invalid-field field="subtitle"/>
                     </div>
@@ -37,7 +37,7 @@
                     <div class="mb-3">
                         <label for="article" class="form-label">{{__('Article')}}</label>
                         <textarea class="form-control" name="article" id="article" rows="3"
-                                  required>{{old('article') ?? $post->article}}</textarea>
+                                  required>{{$post->article ?? old('article')}}</textarea>
 
                         <x-alerts.invalid-field field="article"/>
                     </div>

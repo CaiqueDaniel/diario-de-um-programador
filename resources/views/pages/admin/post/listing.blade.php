@@ -11,6 +11,7 @@
 
     <div class="container">
         <x-alerts.success/>
+        <x-search-bar add="{{route('admin.post.create')}}"/>
 
         <div class="listing">
             @empty($items)
