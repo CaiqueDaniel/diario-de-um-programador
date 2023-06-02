@@ -31,6 +31,10 @@
     </div>
 
     <div class="container pt-5">
-        <x-posts.listing-post title="Últimos artigos"/>
+        <x-posts.listing-post title="Últimos artigos">
+            @foreach($response->items() as $item)
+                <x-posts.item-post title="{{$item->title}}" subtitle="{{$item->subtitle}}"/>
+            @endforeach
+        </x-posts.listing-post>
     </div>
 @endsection
