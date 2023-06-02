@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\PostController;
+use App\Http\Controllers\Web\HomeController;
 use Illuminate\Support\Facades\{
     Auth,
     Route
@@ -19,9 +20,7 @@ use Illuminate\Support\Facades\{
 
 Auth::routes();
 
-Route::get('/', function () {
-    return view('pages.app.homepage.home');
-});
+Route::get('', [HomeController::class, 'index']);
 
 Route::view('artigo', 'pages.app.post.post');
 
