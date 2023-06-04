@@ -11,7 +11,8 @@ class PostRequest extends FormRequest
         return [
             'title' => 'required|max:255',
             'subtitle' => 'required|max:255',
-            'article' => 'required'
+            'article' => 'required',
+            'thumbnail' => 'required|max:8196|mimes:jpg,jpeg,png,webp'
         ];
     }
 }

@@ -9,7 +9,7 @@
     <div class="container">
         <div class="card">
             <div class="card-body">
-                <form action="{{$action}}" method="POST">
+                <form action="{{$action}}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     @empty($post)
@@ -42,8 +42,20 @@
                         <x-alerts.invalid-field field="article"/>
                     </div>
 
-                    <a href="{{url()->previous()}}" class="btn btn-secondary">Voltar</a>
-                    <button type="submit" class="btn btn-primary">Enviar</button>
+                    <div class="mb-3">
+                        <label for="article" class="form-label">{{__('Thumbnail')}}</label>
+
+                        @if(!empty($post))
+                            <img src="{{asset('storage/'.$post->thumbnail)}}" alt="Thumbnail" class="mb-3" style="width: 100%"/>
+                        @endif
+
+                        <input type="file" name="thumbnail" required/>
+
+                        <x-alerts.invalid-field field="thumbnail"/>
+                    </div>
+
+                    <a href="{{url()->previous()}}" class="btn btn-secondary">{{__('Go Back')}}</a>
+                    <button type="submit" class="btn btn-primary">{{__('Submit')}}</button>
                 </form>
             </div>
         </div>

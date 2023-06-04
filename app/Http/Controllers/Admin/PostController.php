@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Post\PostRequest;
+use App\Http\Services\PostService;
+use Cocur\Slugify\Slugify;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\View\View;
 use App\Models\{
@@ -14,6 +17,13 @@ use App\Models\{
 
 class PostController extends Controller
 {
+    private PostService $postService;
+
+    public function __construct(PostService $postService)
+    {
+        $this->postService = $postService;
+    }
+
     public function index(): View
     {
         $response = Post::findAll();
@@ -23,11 +33,7 @@ class PostController extends Controller
 
     public function store(PostRequest $request): RedirectResponse
     {
-        /** @var User $user */
-        $user = auth()->user();
-        $post = new Post($request->validated());
-
-        $user->posts()->save($post);
+        $this->postService->store($request);
 
         session()->flash('message', 'Artigo criado com sucesso');
 
@@ -39,9 +45,9 @@ class PostController extends Controller
         return view('pages.admin.post.form', compact('post'));
     }
 
-    public function update(PostRequest $request, Post $post): RedirectResponse
+    public function update(Post $post, PostRequest $request): RedirectResponse
     {
-        $post->fill($request->validated())->saveOrFail();
+        $this->postService->update($post, $request);
 
         session()->flash('message', 'Artigo editado com sucesso');
 
@@ -64,7 +70,7 @@ class PostController extends Controller
 
     public function destroy(Post $post): RedirectResponse
     {
-        $post->forceDelete();
+        $this->postService->destroy($post);
 
         session()->flash('message', 'Artigo removido com sucesso');
 

@@ -14,6 +14,10 @@ use Illuminate\Pagination\LengthAwarePaginator;
  * @property string $title
  * @property string $subtitle
  * @property string $article
+ * @property string $permalink
+ * @property string $thumbnail
+ * @property string $created_at
+ * @property string $updated_at
  */
 class Post extends Model
 {
