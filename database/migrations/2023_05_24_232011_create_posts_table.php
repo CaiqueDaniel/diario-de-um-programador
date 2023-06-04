@@ -22,10 +22,10 @@ class CreatePostsTable extends Migration
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
 
-            $table->string('title');
+            $table->string('title')->unique();
             $table->string('subtitle');
             $table->text('article');
-            $table->string('permalink');
+            $table->string('permalink')->unique();
             $table->string('thumbnail');
             $table->softDeletes();
             $table->timestamps();
