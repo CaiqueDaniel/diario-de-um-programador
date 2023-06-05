@@ -6,7 +6,7 @@
         $action = empty($post) ? route('admin.post.store') : route('admin.post.update', ['post' => $post->id]);
     @endphp
 
-    <div class="container">
+    <div id="post-form" class="container">
         <div class="card">
             <div class="card-body">
                 <form action="{{$action}}" method="POST" enctype="multipart/form-data">
@@ -49,7 +49,7 @@
                             <img src="{{asset('storage/'.$post->thumbnail)}}" alt="Thumbnail" class="mb-3" style="width: 100%"/>
                         @endif
 
-                        <input type="file" name="thumbnail" required/>
+                        <input type="file" name="thumbnail"/>
 
                         <x-alerts.invalid-field field="thumbnail"/>
                     </div>

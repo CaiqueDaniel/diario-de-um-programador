@@ -16,11 +16,16 @@ class PostRequest extends FormRequest
         if (!empty($post = $this->route('post')))
             $unique->ignore($post->id);
 
+        $thumbnailRules = ['max:8196', 'mimes:jpg,jpeg,png,webp'];
+
+        if (empty($post))
+            $thumbnailRules[] = 'required';
+
         return [
             'title' => ['required', 'max:255', $unique],
             'subtitle' => ['required', 'max:255'],
             'article' => ['required'],
-            'thumbnail' => ['required', 'max:8196', 'mimes:jpg,jpeg,png,webp']
+            'thumbnail' => $thumbnailRules
         ];
     }
 }

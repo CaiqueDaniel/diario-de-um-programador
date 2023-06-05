@@ -58,7 +58,12 @@ class PostService
         $REQUEST_KEY = 'thumbnail';
         $PUBLIC_THUMBNAIL_PATH = 'thumbnails';
 
-        $newThumbnail = $request->file($REQUEST_KEY)->storePublicly($PUBLIC_THUMBNAIL_PATH, self::THUMBNAILS_DISK);
+        $file = $request->file($REQUEST_KEY);
+
+        if (empty($file))
+            return;
+
+        $newThumbnail = $file->storePublicly($PUBLIC_THUMBNAIL_PATH, self::THUMBNAILS_DISK);
 
         if (empty($newThumbnail))
             throw new CannotWriteFileException();
