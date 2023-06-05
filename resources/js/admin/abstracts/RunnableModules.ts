@@ -8,7 +8,7 @@ export default abstract class RunnableModules implements Runnable {
         this.modules.forEach(RunnableModules.invoke);
     }
 
-    private static invoke(runnable: Runnable): void {
+    protected static invoke(runnable: Runnable): void {
         try {
             runnable.run();
         } catch (e) {

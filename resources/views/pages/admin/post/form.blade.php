@@ -36,8 +36,10 @@
 
                     <div class="mb-3">
                         <label for="article" class="form-label">{{__('Article')}}</label>
-                        <textarea class="form-control" name="article" id="article" rows="3"
-                                  required>{{$post->article ?? old('article')}}</textarea>
+
+                        <div id="article-root"></div>
+
+                        <input type="hidden" id="article" name="article" value="{{$post->article ?? old('article')}}"/>
 
                         <x-alerts.invalid-field field="article"/>
                     </div>
