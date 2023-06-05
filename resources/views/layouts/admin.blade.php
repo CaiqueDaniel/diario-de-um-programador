@@ -35,9 +35,8 @@
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav me-auto">
                         @auth
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('admin.post.index') }}">{{ __('Posts') }}</a>
-                            </li>
+                            <x-nav-item href="{{ route('admin.post.index') }}">{{ __('Posts') }}</x-nav-item>
+                            <x-nav-item href="{{ route('admin.category.index') }}">{{ __('Categories') }}</x-nav-item>
                         @endauth
                     </ul>
 

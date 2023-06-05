@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Web\HomeController;
 use Illuminate\Support\Facades\{
@@ -39,6 +40,17 @@ Route::middleware('auth')->prefix('painel')->group(function () {
             Route::patch('{post}/ativar', 'restore')->name('admin.post.restore')->withTrashed();
 
             Route::delete('{post}', 'destroy')->name('admin.post.destroy')->withTrashed();
+        });
+    });
+
+    Route::prefix('categorias')->group(function () {
+        Route::view('criar', 'pages.admin.category.form')->name('admin.category.create');
+
+        Route::controller(CategoryController::class)->group(function () {
+            Route::get('listar', 'index')->name('admin.category.index');
+            Route::get('criar', 'create')->name('admin.category.create');
+
+            Route::post('', 'store')->name('admin.category.store');
         });
     });
 });
