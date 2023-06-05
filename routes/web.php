@@ -48,7 +48,6 @@ Route::middleware('auth')->prefix('painel')->group(function () {
 
         Route::controller(CategoryController::class)->group(function () {
             Route::get('listar', 'index')->name('admin.category.index');
-            Route::get('criar', 'create')->name('admin.category.create');
 
             Route::post('', 'store')->name('admin.category.store');
         });
