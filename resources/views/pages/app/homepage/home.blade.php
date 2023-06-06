@@ -31,10 +31,6 @@
     </div>
 
     <div class="container pt-5">
-        <x-posts.listing-post title="Últimos artigos">
-            @foreach($response->items() as $item)
-                <x-posts.item-post title="{{$item->title}}" subtitle="{{$item->subtitle}}"/>
-            @endforeach
-        </x-posts.listing-post>
+        <x-posts.listing-post title="Últimos artigos" :items="$response->items()"/>
     </div>
 @endsection

@@ -1,8 +1,15 @@
 <?php
 
-use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\Admin\PostController;
-use App\Http\Controllers\Web\HomeController;
+use App\Http\Controllers\Admin\{
+    CategoryController,
+    PostController as AdminPostController
+};
+
+use App\Http\Controllers\Web\{
+    HomeController,
+    PostController as WebPostController
+};
+
 use Illuminate\Support\Facades\{
     Auth,
     Route
@@ -23,13 +30,13 @@ Auth::routes();
 
 Route::get('', [HomeController::class, 'index']);
 
-Route::view('artigo', 'pages.app.post.post');
+Route::get('artigo/{slug}', [WebPostController::class, 'show'])->name('app.post.view');
 
 Route::middleware('auth')->prefix('painel')->group(function () {
     Route::prefix('artigos')->group(function () {
         Route::view('criar', 'pages.admin.post.form')->name('admin.post.create');
 
-        Route::controller(PostController::class)->group(function () {
+        Route::controller(AdminPostController::class)->group(function () {
             Route::get('listar', 'index')->name('admin.post.index')->withTrashed();
             Route::get('editar/{post}', 'edit')->name('admin.post.edit')->withTrashed();
 
