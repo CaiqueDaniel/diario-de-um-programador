@@ -12,5 +12,11 @@
     "Article": "Artigo",
     "Parents": "Parentes",
     "Go Back": "Voltar",
-    "Submit": "Enviar"
+    "Submit": "Enviar",
+    "Password": "Senha",
+    "Forgot Your Password?": "Esqueceu sua senha?",
+    "Remember Me": "Lembrar de mim",
+    "Logout": "Sair",
+    "Reset Password": "Redefinir Senha",
+    "Send Password Reset Link": "Solicitar redefinição de senha"
 }
