@@ -26,7 +26,7 @@ use Illuminate\Support\Facades\{
 |
 */
 
-Auth::routes();
+Auth::routes(['register' => false]);
 
 Route::get('', [HomeController::class, 'index'])->name('app.home');
 
