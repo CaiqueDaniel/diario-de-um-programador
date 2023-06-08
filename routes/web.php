@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\{
 
 Auth::routes();
 
-Route::get('', [HomeController::class, 'index']);
+Route::get('', [HomeController::class, 'index'])->name('app.home');
 
 Route::get('artigo/{slug}', [WebPostController::class, 'show'])->name('app.post.view');
 

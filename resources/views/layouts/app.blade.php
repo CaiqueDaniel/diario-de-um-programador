@@ -39,37 +39,6 @@
                 <!-- Right Side Of Navbar -->
                 <ul class="navbar-nav ms-auto">
                     <!-- Authentication Links -->
-                    @guest
-                        @if (Route::has('login'))
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                            </li>
-                        @endif
-
-                        @if (Route::has('register'))
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                            </li>
-                        @endif
-                    @else
-                        <li class="nav-item dropdown">
-                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                {{ Auth::user()->name }}
-                            </a>
-
-                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{ route('logout') }}"
-                                   onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                    {{ __('Logout') }}
-                                </a>
-
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                    @csrf
-                                </form>
-                            </div>
-                        </li>
-                    @endguest
                 </ul>
             </div>
         </div>
@@ -78,6 +47,30 @@
     <main>
         @yield('content')
     </main>
+
+    <footer class="bg-light">
+        <footer class="bg-white">
+           {{-- <div class="container py-5">
+                <div class="row py-4">
+                    <div class="col-lg-2 col-md-6 mb-4 mb-lg-0">
+                        <h6 class="text-uppercase font-weight-bold mb-4">Site</h6>
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="{{route('app.home')}}" class="text-muted">Home</a></li>
+                            --}}{{--<li class="mb-2"><a href="#" class="text-muted">Register</a></li>
+                            <li class="mb-2"><a href="#" class="text-muted">Wishlist</a></li>
+                            <li class="mb-2"><a href="#" class="text-muted">Our Products</a></li>--}}{{--
+                        </ul>
+                    </div>
+                </div>
+            </div>--}}
+
+            <div class="bg-light py-4">
+                <div class="container text-center">
+                    <p class="text-muted mb-0 py-2">2023 Diário de um programador</p>
+                </div>
+            </div>
+        </footer>
+    </footer>
 </div>
 </body>
 </html>
