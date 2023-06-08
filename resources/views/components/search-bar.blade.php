@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg bg-light border rounded mb-5">
     <div class="container-fluid">
-        <form class="d-flex" role="search">
-            <input class="form-control me-2" type="search" placeholder="{{__('Search')}}" aria-label="{{__('Search')}}">
+        <form class="d-flex" role="search" method="GET" action="">
+            <input class="form-control me-2" type="search" name="search" placeholder="{{__('Search')}}" aria-label="{{__('Search')}}">
             <button class="btn btn-outline-success" type="submit">{{__('Search')}}</button>
         </form>
 

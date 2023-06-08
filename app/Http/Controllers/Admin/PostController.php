@@ -3,17 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Get\SearchRequest;
 use App\Http\Requests\Post\PostRequest;
 use App\Http\Services\PostService;
-use Cocur\Slugify\Slugify;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\View\View;
-use App\Models\{
-    Post,
-    User
-};
+use App\Models\Post;
 
 class PostController extends Controller
 {
@@ -24,9 +20,9 @@ class PostController extends Controller
         $this->postService = $postService;
     }
 
-    public function index(): View
+    public function index(SearchRequest $request): View
     {
-        $response = Post::findAll();
+        $response = Post::findAll($request->get('search'));
 
         return view('pages.admin.post.listing', compact('response'));
     }
