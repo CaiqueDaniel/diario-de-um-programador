@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @php
-    /** @var \App\Models\Category[] $items */
+    /** @var \Illuminate\Database\Eloquent\Collection $items */
 @endphp
 
 @section('content')
@@ -10,7 +10,7 @@
         <x-search-bar add="{{route('admin.category.create')}}"/>
 
         <div class="listing">
-            @empty($items)
+            @if($items->isEmpty())
                 <x-alerts.empty-list/>
             @else
                 <ul class="list-group list-group-horizontal header mb-3 d-none d-md-flex sticky-top">
@@ -20,6 +20,10 @@
                 </ul>
 
                 @foreach($items as $item)
+                    @php
+                        /** @var \App\Models\Category $item */
+                    @endphp
+
                     <ul class="list-group list-group-horizontal-md mb-1">
                         <li class="list-group-item col-md-5">
                             <b class="d-md-none">{{__('Title')}}: </b>{{$item->name}}
