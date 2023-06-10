@@ -244,4 +244,20 @@ class CategoryTest extends TestCase
             ->assertRedirect()
             ->assertInvalid(['parent']);
     }
+
+    public function test_setting_parent_as_itsself(): void
+    {
+        $slugfy = new Slugify();
+        $category = new Category(['name' => $this->faker->userName()]);
+        $category->permalink = $slugfy->slugify($category->name);
+        $category->save();
+
+        $this->assertDatabaseHas(Category::class, $category->toArray());
+
+        $response = $this->put("/painel/categorias/{$category->id}", ['name' => $this->faker->userName(), 'parent' => $category->id]);
+
+        $response
+            ->assertRedirect()
+            ->assertInvalid(['parent']);
+    }
 }
