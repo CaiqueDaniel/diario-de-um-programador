@@ -57,6 +57,12 @@ Route::middleware('auth')->prefix('painel')->group(function () {
             Route::get('listar', 'index')->name('admin.category.index');
 
             Route::post('', 'store')->name('admin.category.store');
+            Route::put('{category}', 'update')->name('admin.category.update')->withTrashed();
+
+            Route::patch('{category}/desativar', 'trash')->name('admin.category.trash')->withTrashed();
+            Route::patch('{category}/ativar', 'restore')->name('admin.category.restore')->withTrashed();
+
+            Route::delete('{category}', 'destroy')->name('admin.category.destroy')->withTrashed();
         });
     });
 });
