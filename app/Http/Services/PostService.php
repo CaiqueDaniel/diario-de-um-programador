@@ -6,6 +6,7 @@ use App\Models\Post;
 use App\Models\User;
 use Cocur\Slugify\Slugify;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\File\Exception\CannotWriteFileException;
 
@@ -23,7 +24,10 @@ class PostService
         PostService::definePermalink($post);
         PostService::defineThumbnail($post, $request);
 
-        $user->posts()->save($post);
+        DB::transaction(function () use ($user, $post, $request) {
+            $user->posts()->save($post);
+            $post->categories()->attach($request->get('categories'));
+        });
 
         return $post;
     }
@@ -35,7 +39,10 @@ class PostService
         PostService::definePermalink($post);
         PostService::defineThumbnail($post, $request);
 
-        $post->save();
+        DB::transaction(function () use ($post, $request) {
+            $post->save();
+            $post->categories()->sync($request->get('categories'));
+        });
 
         return $post;
     }

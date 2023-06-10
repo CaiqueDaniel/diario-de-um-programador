@@ -6,7 +6,10 @@
 
     @foreach($items as $i)
         @php
-            /** @var \App\Models\Category $i */
+            /**
+            * @var \App\Models\Category $i
+            * @var \Illuminate\Support\Collection $selected
+            */
             if(empty($i->getRelations()))
                 $children = $i->children()->get();
             else
@@ -20,7 +23,9 @@
                 <div class="form-check col-11 m-0">
                     <input class="form-check-input" type="{{$multiple ? 'checkbox' : 'radio'}}" name="{{$name}}"
                            id="{{$i->permalink}}"
-                           value="{{$i->id}}">
+                           value="{{$i->id}}"
+                        {{$selected->contains('id','=',$i->id) ? 'checked' : ''}}
+                    >
                     <label class="form-check-label" for="{{$i->permalink}}">{{$i->name}}</label>
                 </div>
 
@@ -34,7 +39,7 @@
 
             <div class="collapse" id="cat-{{$i->id}}">
                 @if($hasChildren)
-                    <x-category-selection name="{{$name}}" multiple="{{$multiple}}" :items="$children"/>
+                    <x-category-selection name="{{$name}}" multiple="{{$multiple}}" :items="$children" :selected="$selected"/>
                 @endif
             </div>
         </li>

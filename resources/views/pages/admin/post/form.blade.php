@@ -19,7 +19,7 @@
                     @endempty
 
                     <div class="mb-3">
-                        <label for="title" class="form-label">{{__('Title')}}</label>
+                        <label for="title" class="form-label">{{__('Title')}}*</label>
                         <input type="text" name="title" class="form-control" id="title"
                                value="{{$post->title ?? old('title')}}" required>
 
@@ -27,7 +27,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="subtitle" class="form-label">{{__('Subtitle')}}</label>
+                        <label for="subtitle" class="form-label">{{__('Subtitle')}}*</label>
                         <textarea class="form-control" name="subtitle" id="subtitle" rows="3"
                                   required>{{$post->subtitle ?? old('subtitle') }}</textarea>
 
@@ -35,7 +35,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="article" class="form-label">{{__('Thumbnail')}}</label>
+                        <label for="article" class="form-label">{{__('Thumbnail')}}*</label>
 
                         @if(!empty($post))
                             <img src="{{asset('storage/'.$post->thumbnail)}}" alt="Thumbnail" class="mb-3"
@@ -48,7 +48,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="article" class="form-label">{{__('Article')}}</label>
+                        <label for="article" class="form-label">{{__('Article')}}*</label>
 
                         <div id="article-root"></div>
 
@@ -59,7 +59,14 @@
 
                     <div class="mb-3">
                         <label for="article" class="form-label">{{__('Category')}}</label>
-                        <x-category-selection name="category" multiple="true"/>
+
+                        @empty($post)
+                            <x-category-selection name="categories[]" multiple="true"/>
+                        @else
+                            <x-category-selection name="categories[]" multiple="true" :selected="$post->categories()->get()"/>
+                        @endempty
+
+                        <x-alerts.invalid-field field="categories.*"/>
                     </div>
 
                     <a href="{{url()->previous()}}" class="btn btn-secondary">{{__('Go Back')}}</a>

@@ -25,7 +25,8 @@ class PostRequest extends FormRequest
             'title' => ['required', 'max:255', $unique],
             'subtitle' => ['required', 'max:255'],
             'article' => ['required'],
-            'thumbnail' => $thumbnailRules
+            'thumbnail' => $thumbnailRules,
+            'categories.*' => ['nullable', 'numeric', 'distinct']
         ];
     }
 }
