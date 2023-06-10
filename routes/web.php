@@ -55,6 +55,7 @@ Route::middleware('auth')->prefix('painel')->group(function () {
 
         Route::controller(CategoryController::class)->group(function () {
             Route::get('listar', 'index')->name('admin.category.index');
+            Route::get('editar/{category}', 'edit')->name('admin.category.edit')->withTrashed();
 
             Route::post('', 'store')->name('admin.category.store');
             Route::put('{category}', 'update')->name('admin.category.update')->withTrashed();

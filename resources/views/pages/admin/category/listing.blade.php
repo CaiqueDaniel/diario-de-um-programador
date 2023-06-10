@@ -38,17 +38,17 @@
                                 <input
                                     class="form-check-input"
                                     type="checkbox"
-                                    data-restore="{{route('admin.post.restore', ['post' => $item->id])}}"
-                                    data-trash="{{route('admin.post.trash', ['post' => $item->id])}}"
+                                    data-restore="{{route('admin.category.restore', ['category' => $item->id])}}"
+                                    data-trash="{{route('admin.category.trash', ['category' => $item->id])}}"
                                     role="switch" {{$item->trashed()?'':'checked'}}
                                 />
                             </div>
 
-                            <a class="btn btn-sm btn-outline-warning" href="{{route('admin.post.edit', $item->id)}}">
+                            <a class="btn btn-sm btn-outline-warning" href="{{route('admin.category.edit', $item->id)}}">
                                 <i class="fa-regular fa-pen-to-square"></i>
                             </a>
 
-                            <form action="{{ route('admin.post.destroy', $item) }}" method="POST">
+                            <form action="{{ route('admin.category.destroy', $item) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
 

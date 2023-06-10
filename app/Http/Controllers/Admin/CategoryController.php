@@ -18,7 +18,7 @@ class CategoryController extends Controller
 
     public function index(): View
     {
-        $items = Category::all();
+        $items = Category::withTrashed()->get();
 
         return view('pages.admin.category.listing', compact('items'));
     }
@@ -55,9 +55,14 @@ class CategoryController extends Controller
         $category->fill($request->only(self::FILLABLE_KEYS));
 
         /** @var Category $parentCategory */
-        $parentCategory = $category->parent()->first();
+        $parentCategory = Category::find($request->get('parent'));
 
         if (empty($parentCategory)) {
+            $parentCategory = $category->parent()->first();
+
+            if (!empty($parentCategory))
+                $category->parent()->disassociate();
+
             $category->permalink = $slugfy->slugify($category->name);
             $category->save();
         } else {
