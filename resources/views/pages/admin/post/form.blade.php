@@ -35,6 +35,19 @@
                     </div>
 
                     <div class="mb-3">
+                        <label for="article" class="form-label">{{__('Thumbnail')}}</label>
+
+                        @if(!empty($post))
+                            <img src="{{asset('storage/'.$post->thumbnail)}}" alt="Thumbnail" class="mb-3"
+                                 style="width: 100%"/>
+                        @endif
+
+                        <input type="file" name="thumbnail"/>
+
+                        <x-alerts.invalid-field field="thumbnail"/>
+                    </div>
+
+                    <div class="mb-3">
                         <label for="article" class="form-label">{{__('Article')}}</label>
 
                         <div id="article-root"></div>
@@ -45,15 +58,8 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="article" class="form-label">{{__('Thumbnail')}}</label>
-
-                        @if(!empty($post))
-                            <img src="{{asset('storage/'.$post->thumbnail)}}" alt="Thumbnail" class="mb-3" style="width: 100%"/>
-                        @endif
-
-                        <input type="file" name="thumbnail"/>
-
-                        <x-alerts.invalid-field field="thumbnail"/>
+                        <label for="article" class="form-label">{{__('Category')}}</label>
+                        <x-category-selection name="category" multiple="true"/>
                     </div>
 
                     <a href="{{url()->previous()}}" class="btn btn-secondary">{{__('Go Back')}}</a>

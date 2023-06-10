@@ -30,7 +30,7 @@
                     <div class="mb-3">
                         <label class="form-label">{{__('Parents')}}</label>
 
-                        <x-category-selection/>
+                        <x-category-selection name="parent"/>
                     </div>
 
                     <a href="{{url()->previous()}}" class="btn btn-secondary">{{__('Go Back')}}</a>
