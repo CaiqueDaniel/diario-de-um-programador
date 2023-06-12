@@ -203,6 +203,65 @@ class CategoryTest extends TestCase
         $response->assertStatus(405);
     }
 
+    public function test_disabling_category(): void
+    {
+        $slugfy = new Slugify();
+        $category = new Category(['name' => $this->faker->userName()]);
+        $category->permalink = $slugfy->slugify($category->name);
+        $category->save();
+
+        $this->assertDatabaseHas(Category::class, $category->toArray());
+
+        $response = $this->patch("/painel/categorias/{$category->id}/desativar");
+        $response->assertOk();
+
+        /** @var Category $category */
+        $category = Category::withTrashed()->where('id', '=', $category->id)->first();
+        $this->assertNotNull($category->deleted_at);
+    }
+
+    public function test_enabling_category(): void
+    {
+        $slugfy = new Slugify();
+        $category = new Category(['name' => $this->faker->userName()]);
+        $category->permalink = $slugfy->slugify($category->name);
+
+        $category->save();
+        $category->delete();
+        $category->save();
+
+        $modelData = $category->toArray();
+
+        unset($modelData['deleted_at']);
+
+        $this->assertDatabaseHas(Category::class, $modelData);
+
+        $response = $this->patch("/painel/categorias/{$category->id}/ativar");
+        $response->assertOk();
+
+        /** @var Category $category */
+        $category = Category::withTrashed()->where('id', '=', $category->id)->first();
+        $this->assertNull($category->deleted_at);
+    }
+
+    public function test_deleting_category(): void
+    {
+        $slugfy = new Slugify();
+        $category = new Category(['name' => $this->faker->userName()]);
+        $category->permalink = $slugfy->slugify($category->name);
+        $category->save();
+
+        $this->assertDatabaseHas(Category::class, $category->toArray());
+
+        $response = $this->delete("/painel/categorias/{$category->id}");
+
+        $response
+            ->assertRedirect()
+            ->assertSessionHas('message', 'Categoria excluída com sucesso');
+
+        $this->assertDatabaseMissing(Category::class, $category->toArray());
+    }
+
     public function test_required_name(): void
     {
         $response = $this->post('/painel/categorias');
