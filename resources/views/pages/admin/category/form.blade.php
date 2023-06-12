@@ -35,6 +35,8 @@
                         @else
                             <x-category-selection name="parent" :selected="$category->parent()->get()"/>
                         @endempty
+
+                        <x-alerts.invalid-field field="parent"/>
                     </div>
 
                     <a href="{{url()->previous()}}" class="btn btn-secondary">{{__('Go Back')}}</a>
