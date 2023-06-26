@@ -12,9 +12,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $image
  * @property int $position
  */
-class Fullbanner extends Model
+class FullBanner extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
     protected $fillable = ['title', 'link', 'image', 'position'];
 }
