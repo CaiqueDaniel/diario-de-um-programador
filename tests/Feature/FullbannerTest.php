@@ -136,11 +136,47 @@ class FullbannerTest extends TestCase implements CRUDTest, SoftDeleteTest
 
     public function test_enabling_item(): void
     {
-        // TODO: Implement test_enabling_item() method.
+        $banner = new FullBanner([
+            'title' => $this->faker->name(),
+            'link' => $this->faker->url(),
+            'image' => UploadedFile::fake()->create($this->faker->name() . '.jpg'),
+            'position' => 1
+        ]);
+
+        $banner->save();
+        $banner->delete();
+        $banner->save();
+
+        $this->assertDatabaseHas(FullBanner::class, $banner->toArray());
+
+        $modelData = $banner->toArray();
+
+        unset($modelData['deleted_at']);
+
+        $this->patch("/painel/fullbanners/{$banner->id}/ativar")->assertOk();
+        $this->assertDatabaseHas(FullBanner::class, $modelData);
+
+        $banner = FullBanner::withoutTrashed()->find($banner->id);
+
+        $this->assertFalse($banner->trashed());
     }
 
     public function test_disabling_item(): void
     {
-        // TODO: Implement test_disabling_item() method.
+        $banner = new FullBanner([
+            'title' => $this->faker->name(),
+            'link' => $this->faker->url(),
+            'image' => UploadedFile::fake()->create($this->faker->name() . '.jpg'),
+            'position' => 1
+        ]);
+
+        $banner->save();
+
+        $this->assertDatabaseHas(FullBanner::class, $banner->toArray());
+        $this->patch("/painel/fullbanners/{$banner->id}/desativar")->assertOk();
+
+        $banner = FullBanner::withTrashed()->find($banner->id);
+
+        $this->assertTrue($banner->trashed());
     }
 }
