@@ -44,7 +44,7 @@ class FullbannerTest extends TestCase implements CRUDTest, SoftDeleteTest
 
     public function test_load_form_create(): void
     {
-        $response = $this->get('/painel/fullbanners/adicionar');
+        $response = $this->get('/painel/fullbanners/criar');
 
         $response
             ->assertOk()
