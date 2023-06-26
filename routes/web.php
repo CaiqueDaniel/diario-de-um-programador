@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Admin\{
     CategoryController,
-    FullbannerController,
+    FullBannerController,
     PostController as AdminPostController
 };
 
@@ -71,7 +71,7 @@ Route::middleware('auth')->prefix('painel')->group(function () {
     Route::prefix('fullbanners')->group(function () {
         Route::view('criar', 'pages.admin.fullbanner.form')->name('admin.fullbanner.create');
 
-        Route::controller(FullbannerController::class)->group(function () {
+        Route::controller(FullBannerController::class)->group(function () {
             Route::get('listar', 'index')->name('admin.fullbanner.index')->withTrashed();
             Route::get('editar/{fullbanner}', 'edit')->name('admin.fullbanner.edit')->withTrashed();
 

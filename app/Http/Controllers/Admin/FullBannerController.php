@@ -9,7 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-class FullbannerController extends Controller
+class FullBannerController extends Controller
 {
     public function index(): View
     {
