@@ -22,9 +22,13 @@ class FullBannerController extends Controller
     {
         $total = FullBanner::query()->count();
 
-        $banner = new FullBanner($request->validated());
-        $banner->position = $total + 1;
+        $banner = new FullBanner([
+            'title' => $request->get('title'),
+            'link' => $request->get('link'),
+            'image' => $request->file('image')
+        ]);
 
+        $banner->position = $total + 1;
         $banner->save();
 
         session()->flash('message', 'Fullbanner criado com sucesso');
@@ -32,15 +36,19 @@ class FullBannerController extends Controller
         return redirect()->route('admin.fullbanner.index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function show(FullBanner $fullbanner, FullBannerRequest $request): RedirectResponse
     {
-        //
+        $fullbanner->fill([
+            'title' => $request->get('title'),
+            'link' => $request->get('link'),
+            'image' => $request->file('image')
+        ]);
+
+        $fullbanner->save();
+
+        session()->flash('message', 'Fullbanner alterado com sucesso');
+
+        return redirect()->route('admin.fullbanner.index');
     }
 
     /**
