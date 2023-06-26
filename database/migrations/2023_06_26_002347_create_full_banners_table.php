@@ -19,6 +19,7 @@ class CreateFullBannersTable extends Migration
             $table->string('link');
             $table->string('image');
             $table->integer('position');
+            $table->softDeletes();
         });
     }
 
