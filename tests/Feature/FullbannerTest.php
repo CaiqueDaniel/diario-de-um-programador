@@ -55,20 +55,18 @@ class FullbannerTest extends TestCase implements CRUDTest, SoftDeleteTest
     {
         $title = $this->faker->name();
         $link = $this->faker->url();
-        $position = 1;
 
         $response = $this->post('/painel/fullbanners', [
             'title' => $title,
             'link' => $link,
             'image' => UploadedFile::fake()->create($this->faker->name() . '.jpg'),
-            'position' => $position
         ]);
 
         $response
             ->assertRedirect()
             ->assertSessionHas('message', 'Fullbanner criado com sucesso');
 
-        $this->assertDatabaseHas(FullBanner::class, ['title' => $title, 'link' => $link, 'postion' => $position]);
+        $this->assertDatabaseHas(FullBanner::class, ['title' => $title, 'link' => $link]);
 
         /** @var FullBanner $banner */
         $banner = FullBanner::query()->where('title', 'like', $title)->first();

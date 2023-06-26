@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Post\FullBannerRequest;
 use App\Models\FullBanner;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -16,15 +18,18 @@ class FullbannerController extends Controller
         return view('pages.admin.fullbanner.listing', compact('response'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function store(FullBannerRequest $request): RedirectResponse
     {
-        //
+        $total = FullBanner::query()->count();
+
+        $banner = new FullBanner($request->validated());
+        $banner->position = $total + 1;
+
+        $banner->save();
+
+        session()->flash('message', 'Fullbanner criado com sucesso');
+
+        return redirect()->route('admin.fullbanner.index');
     }
 
     /**

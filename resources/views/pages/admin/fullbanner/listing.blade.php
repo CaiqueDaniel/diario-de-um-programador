@@ -39,8 +39,8 @@
                                 <input
                                     class="form-check-input"
                                     type="checkbox"
-                                    data-restore="{{route('admin.fullbanner.restore', ['category' => $item->id])}}"
-                                    data-trash="{{route('admin.fullbanner.trash', ['category' => $item->id])}}"
+                                    data-restore="{{route('admin.fullbanner.restore', ['fullbanner' => $item->id])}}"
+                                    data-trash="{{route('admin.fullbanner.trash', ['fullbanner' => $item->id])}}"
                                     role="switch" {{$item->trashed()?'':'checked'}}
                                 />
                             </div>

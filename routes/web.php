@@ -1,6 +1,10 @@
 <?php
 
-use App\Http\Controllers\Admin\{CategoryController, FullbannerController, PostController as AdminPostController};
+use App\Http\Controllers\Admin\{
+    CategoryController,
+    FullbannerController,
+    PostController as AdminPostController
+};
 
 use App\Http\Controllers\Web\{
     HomeController,
