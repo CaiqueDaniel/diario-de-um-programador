@@ -36,7 +36,12 @@ class FullBannerController extends Controller
         return redirect()->route('admin.fullbanner.index');
     }
 
-    public function show(FullBanner $fullbanner, FullBannerRequest $request): RedirectResponse
+    public function edit(FullBanner $fullbanner): View
+    {
+        return view('pages.admin.fullbanner.form', compact('fullbanner'));
+    }
+
+    public function update(FullBanner $fullbanner, FullBannerRequest $request): RedirectResponse
     {
         $fullbanner->fill([
             'title' => $request->get('title'),
@@ -49,29 +54,6 @@ class FullBannerController extends Controller
         session()->flash('message', 'Fullbanner alterado com sucesso');
 
         return redirect()->route('admin.fullbanner.index');
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
     }
 
     /**
