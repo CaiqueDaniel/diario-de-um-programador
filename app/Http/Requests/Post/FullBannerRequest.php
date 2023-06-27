@@ -10,7 +10,7 @@ class FullBannerRequest extends FormRequest
     {
         $imageRules = ['max:8196', 'mimes:jpg,jpeg,png,webp'];
 
-        if (empty($post))
+        if (empty($this->route()->parameter('fullbanner')))
             $imageRules[] = 'required';
 
         return [
