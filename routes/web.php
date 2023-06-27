@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\{
     CategoryController,
+    FullBannerController,
     PostController as AdminPostController
 };
 
@@ -64,6 +65,23 @@ Route::middleware('auth')->prefix('painel')->group(function () {
             Route::patch('{category}/ativar', 'restore')->name('admin.category.restore')->withTrashed();
 
             Route::delete('{category}', 'destroy')->name('admin.category.destroy')->withTrashed();
+        });
+    });
+
+    Route::prefix('fullbanners')->group(function () {
+        Route::view('criar', 'pages.admin.fullbanner.form')->name('admin.fullbanner.create');
+
+        Route::controller(FullBannerController::class)->group(function () {
+            Route::get('listar', 'index')->name('admin.fullbanner.index')->withTrashed();
+            Route::get('editar/{fullbanner}', 'edit')->name('admin.fullbanner.edit')->withTrashed();
+
+            Route::post('', 'store')->name('admin.fullbanner.store');
+            Route::put('{fullbanner}', 'update')->name('admin.fullbanner.update')->withTrashed();
+
+            Route::patch('{fullbanner}/desativar', 'trash')->name('admin.fullbanner.trash')->withTrashed();
+            Route::patch('{fullbanner}/ativar', 'restore')->name('admin.fullbanner.restore')->withTrashed();
+
+            Route::delete('{fullbanner}', 'destroy')->name('admin.fullbanner.destroy')->withTrashed();
         });
     });
 });

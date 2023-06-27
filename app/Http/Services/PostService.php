@@ -2,18 +2,23 @@
 
 namespace App\Http\Services;
 
-use App\Models\Post;
-use App\Models\User;
+use App\Models\{Post, User};
 use Cocur\Slugify\Slugify;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpFoundation\File\Exception\CannotWriteFileException;
 
 class PostService
 {
-    private const THUMBNAILS_DISK = 'public';
     private const FILLABLE_KEYS = ['title', 'subtitle', 'article'];
+    private const FILE_KEY = 'thumbnail';
+    private const PUBLIC_THUMBNAIL_PATH = 'thumbnails';
+
+    private FileUploadService $fileUploadService;
+
+    public function __construct(FileUploadService $fileUploadService)
+    {
+        $this->fileUploadService = $fileUploadService;
+    }
 
     public function store(Request $request): Post
     {
@@ -21,8 +26,8 @@ class PostService
         $user = auth()->user();
         $post = new Post($request->only(self::FILLABLE_KEYS));
 
-        PostService::definePermalink($post);
-        PostService::defineThumbnail($post, $request);
+        $this->definePermalink($post);
+        $this->defineThumbnail($post, $request);
 
         DB::transaction(function () use ($user, $post, $request) {
             $user->posts()->save($post);
@@ -36,8 +41,8 @@ class PostService
     {
         $post->fill($request->only(self::FILLABLE_KEYS));
 
-        PostService::definePermalink($post);
-        PostService::defineThumbnail($post, $request);
+        $this->definePermalink($post);
+        $this->defineThumbnail($post, $request);
 
         DB::transaction(function () use ($post, $request) {
             $post->save();
@@ -51,40 +56,27 @@ class PostService
     {
         $post->forceDelete();
 
-        PostService::deleteUnusedThumbnail($post);
+        $this->fileUploadService->delete($post->thumbnail);
     }
 
-    private static function definePermalink(Post $post): void
+    private function definePermalink(Post $post): void
     {
         $slugfy = new Slugify();
         $post->permalink = $slugfy->slugify($post->title);
     }
 
-    private static function defineThumbnail(Post $post, Request $request): void
+    private function defineThumbnail(Post $post, Request $request): void
     {
-        $REQUEST_KEY = 'thumbnail';
-        $PUBLIC_THUMBNAIL_PATH = 'thumbnails';
-
-        $file = $request->file($REQUEST_KEY);
+        $file = $request->file(self::FILE_KEY);
 
         if (empty($file))
             return;
 
-        $newThumbnail = $file->storePublicly($PUBLIC_THUMBNAIL_PATH, self::THUMBNAILS_DISK);
+        $thumbnail = $this->fileUploadService->upload($file, self::PUBLIC_THUMBNAIL_PATH);
 
-        if (empty($newThumbnail))
-            throw new CannotWriteFileException();
+        if (!empty($post->thumbnail))
+            $this->fileUploadService->delete($post->thumbnail);
 
-        PostService::deleteUnusedThumbnail($post);
-
-        $post->thumbnail = $newThumbnail;
-    }
-
-    private static function deleteUnusedThumbnail(Post $post): void
-    {
-        if (empty($post->thumbnail))
-            return;
-
-        Storage::disk(self::THUMBNAILS_DISK)->delete($post->thumbnail);
+        $post->thumbnail = $thumbnail;
     }
 }

@@ -37,6 +37,7 @@
                         @auth
                             <x-nav-item href="{{ route('admin.post.index') }}">{{ __('Posts') }}</x-nav-item>
                             <x-nav-item href="{{ route('admin.category.index') }}">{{ __('Categories') }}</x-nav-item>
+                            <x-nav-item href="{{ route('admin.fullbanner.index') }}">{{ __('Fullbanners') }}</x-nav-item>
                         @endauth
                     </ul>
 
