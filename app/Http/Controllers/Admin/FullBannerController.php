@@ -4,14 +4,23 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Post\FullBannerRequest;
+use App\Http\Services\FullBannerService;
 use App\Models\FullBanner;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
+use Throwable;
 
 class FullBannerController extends Controller
 {
+    private FullBannerService $fullBannerService;
+
+    public function __construct(FullBannerService $fullBannerService)
+    {
+        $this->fullBannerService = $fullBannerService;
+    }
+
     public function index(): View
     {
         $response = FullBanner::withTrashed()->paginate();
@@ -19,18 +28,12 @@ class FullBannerController extends Controller
         return view('pages.admin.fullbanner.listing', compact('response'));
     }
 
+    /**
+     * @throws Throwable
+     */
     public function store(FullBannerRequest $request): RedirectResponse
     {
-        $total = FullBanner::query()->count();
-
-        $banner = new FullBanner([
-            'title' => $request->get('title'),
-            'link' => $request->get('link'),
-            'image' => $request->file('image')
-        ]);
-
-        $banner->position = $total + 1;
-        $banner->save();
+        $this->fullBannerService->store($request);
 
         session()->flash('message', 'Fullbanner criado com sucesso');
 
@@ -42,15 +45,12 @@ class FullBannerController extends Controller
         return view('pages.admin.fullbanner.form', compact('fullbanner'));
     }
 
+    /**
+     * @throws Throwable
+     */
     public function update(FullBanner $fullbanner, FullBannerRequest $request): RedirectResponse
     {
-        $fullbanner->fill([
-            'title' => $request->get('title'),
-            'link' => $request->get('link'),
-            'image' => $request->file('image')
-        ]);
-
-        $fullbanner->save();
+        $this->fullBannerService->update($fullbanner, $request);
 
         session()->flash('message', 'Fullbanner alterado com sucesso');
 
@@ -59,7 +59,7 @@ class FullBannerController extends Controller
 
     public function destroy(FullBanner $fullbanner): RedirectResponse
     {
-        $fullbanner->forceDelete();
+        $this->fullBannerService->destroy($fullbanner);
 
         session()->flash('message', 'Fullbanner excluído com sucesso');
 
