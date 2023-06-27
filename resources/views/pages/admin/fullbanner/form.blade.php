@@ -38,7 +38,7 @@
                     <div class="mb-3">
                         <label for="article" class="form-label">{{__('Image')}}*</label>
 
-                        @if(!empty($post))
+                        @if(!empty($fullbanner))
                             <img src="{{asset('storage/'.$fullbanner->image)}}" alt="Image" class="mb-3"
                                  style="width: 100%"/>
                         @endif
