@@ -68,6 +68,10 @@ class PostService
     private function defineThumbnail(Post $post, Request $request): void
     {
         $file = $request->file(self::FILE_KEY);
+
+        if (empty($file))
+            return;
+
         $thumbnail = $this->fileUploadService->upload($file, self::PUBLIC_THUMBNAIL_PATH);
 
         if (!empty($post->thumbnail))
