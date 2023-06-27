@@ -7,6 +7,7 @@ use App\Http\Requests\Post\FullBannerRequest;
 use App\Models\FullBanner;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\View\View;
 
 class FullBannerController extends Controller
@@ -63,5 +64,19 @@ class FullBannerController extends Controller
         session()->flash('message', 'Fullbanner excluído com sucesso');
 
         return redirect()->route('admin.fullbanner.index');
+    }
+
+    public function trash(FullBanner $fullbanner): Response
+    {
+        $fullbanner->delete();
+
+        return response(null);
+    }
+
+    public function restore(FullBanner $fullbanner): Response
+    {
+        $fullbanner->restore();
+
+        return response(null);
     }
 }
