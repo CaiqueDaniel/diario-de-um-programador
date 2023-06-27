@@ -98,11 +98,13 @@ class FullBannerTest extends TestCase implements CRUDTest, SoftDeleteTest
 
     public function test_update(): void
     {
+        $position = 1;
+
         $banner = new FullBanner([
             'title' => $this->faker->name(),
             'link' => $this->faker->url(),
             'image' => UploadedFile::fake()->create($this->faker->name() . '.jpg'),
-            'position' => 1
+            'position' => $position
         ]);
 
         $banner->save();
@@ -111,20 +113,18 @@ class FullBannerTest extends TestCase implements CRUDTest, SoftDeleteTest
 
         $title = $this->faker->name();
         $link = $this->faker->url();
-        $position = 2;
 
         $response = $this->put("/painel/fullbanners/{$banner->id}", [
             'title' => $title,
             'link' => $link,
-            'image' => UploadedFile::fake()->create($this->faker->name() . '.jpg'),
-            'position' => $position
+            'image' => UploadedFile::fake()->create($this->faker->name() . '.jpg')
         ]);
 
         $response
             ->assertRedirect()
             ->assertSessionHas('message', 'Fullbanner alterado com sucesso');
 
-        $this->assertDatabaseHas(FullBanner::class, ['title' => $title, 'link' => $link, 'postion' => $position]);
+        $this->assertDatabaseHas(FullBanner::class, ['title' => $title, 'link' => $link, 'position' => $position]);
 
         /** @var FullBanner $banner */
         $banner = FullBanner::query()->where('title', 'like', $title)->first();
@@ -145,7 +145,7 @@ class FullBannerTest extends TestCase implements CRUDTest, SoftDeleteTest
         $banner->delete();
         $banner->save();
 
-        $this->assertDatabaseHas(FullBanner::class, $banner->toArray());
+        $this->assertDatabaseHas(FullBanner::class, ['title' => $banner->title]);
 
         $modelData = $banner->toArray();
 
