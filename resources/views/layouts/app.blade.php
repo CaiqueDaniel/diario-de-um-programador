@@ -14,10 +14,10 @@
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/common.css') }}" rel="stylesheet">
 </head>
 <body>
 <div id="app">
@@ -26,7 +26,9 @@
             <a class="navbar-brand" href="{{ url('/') }}">
                 {{ config('app.name', 'Laravel') }}
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
@@ -50,19 +52,19 @@
 
     <footer class="bg-light">
         <footer class="bg-white">
-           {{-- <div class="container py-5">
-                <div class="row py-4">
-                    <div class="col-lg-2 col-md-6 mb-4 mb-lg-0">
-                        <h6 class="text-uppercase font-weight-bold mb-4">Site</h6>
-                        <ul class="list-unstyled mb-0">
-                            <li class="mb-2"><a href="{{route('app.home')}}" class="text-muted">Home</a></li>
-                            --}}{{--<li class="mb-2"><a href="#" class="text-muted">Register</a></li>
-                            <li class="mb-2"><a href="#" class="text-muted">Wishlist</a></li>
-                            <li class="mb-2"><a href="#" class="text-muted">Our Products</a></li>--}}{{--
-                        </ul>
-                    </div>
-                </div>
-            </div>--}}
+            {{-- <div class="container py-5">
+                 <div class="row py-4">
+                     <div class="col-lg-2 col-md-6 mb-4 mb-lg-0">
+                         <h6 class="text-uppercase font-weight-bold mb-4">Site</h6>
+                         <ul class="list-unstyled mb-0">
+                             <li class="mb-2"><a href="{{route('app.home')}}" class="text-muted">Home</a></li>
+                             --}}{{--<li class="mb-2"><a href="#" class="text-muted">Register</a></li>
+                             <li class="mb-2"><a href="#" class="text-muted">Wishlist</a></li>
+                             <li class="mb-2"><a href="#" class="text-muted">Our Products</a></li>--}}{{--
+                         </ul>
+                     </div>
+                 </div>
+             </div>--}}
 
             <div class="bg-light py-4">
                 <div class="container text-center">
