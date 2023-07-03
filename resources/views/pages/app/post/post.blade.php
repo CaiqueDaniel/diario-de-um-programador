@@ -5,7 +5,7 @@
 @endphp
 
 @section('content')
-    @include('pages.app.posts.components.article-cover', ['post'=>$post])
+    @include('pages.app.post.components.article-cover', ['post'=>$post])
 
     <div class="container mt-4 w-md-50">
         <div>

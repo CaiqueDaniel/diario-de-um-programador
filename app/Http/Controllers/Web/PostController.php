@@ -12,6 +12,6 @@ class PostController extends Controller
     {
         $post = Post::with('author')->where('permalink', 'like', $slug)->first();
 
-        return view('pages.app.posts.post', compact('post'));
+        return view('pages.app.post.post', compact('post'));
     }
 }
