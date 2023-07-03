@@ -7,7 +7,7 @@
 @section('content')
     @include('pages.app.post.components.article-cover', ['post'=>$post])
 
-    <div class="container mt-4 w-md-50">
+    <div class="container mt-4 w-md-50 px-3 px-md-5">
         <div>
             <b>Por: {{$post->getRelation('author')->name}}</b><br/>
             <time datetime="{{$post->created_at}}">Em: @datetime($post->created_at)</time>
