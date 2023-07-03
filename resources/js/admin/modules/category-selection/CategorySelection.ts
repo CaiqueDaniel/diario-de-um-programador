@@ -1,4 +1,4 @@
-import {Runnable} from "../../interfaces";
+import {Runnable} from "../../../interfaces";
 
 export default class CategorySelection implements Runnable {
     private btnReset: HTMLButtonElement;

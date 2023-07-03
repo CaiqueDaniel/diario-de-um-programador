@@ -1,10 +1,13 @@
-import RunnableModules from "../../abstracts/RunnableModules";
-import ArticleField from "./modules/ArticleField";
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-export default class PostForm extends RunnableModules{
-    constructor() {
-        super([
-            new ArticleField()
-        ]);
+import {Runnable} from "../../../interfaces";
+import ArticleField from "./components/ArticleField";
+
+export default class PostForm implements Runnable{
+    public run(): void{
+        const articleInput = document.getElementById('article') as HTMLInputElement;
+
+        ReactDOM.render(<ArticleField input={articleInput}/>,document.getElementById('article-root'));
     }
 }

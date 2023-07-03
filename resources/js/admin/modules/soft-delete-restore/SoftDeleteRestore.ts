@@ -1,4 +1,4 @@
-import {Runnable} from "../../interfaces";
+import {Runnable} from "../../../interfaces";
 
 export default class SoftDeleteRestore implements Runnable {
     public run() {
