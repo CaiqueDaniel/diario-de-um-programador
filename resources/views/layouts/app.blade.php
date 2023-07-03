@@ -46,7 +46,7 @@
         </div>
     </nav>
 
-    <main>
+    <main id="{{$pagename ?? ''}}">
         @yield('content')
     </main>
 
