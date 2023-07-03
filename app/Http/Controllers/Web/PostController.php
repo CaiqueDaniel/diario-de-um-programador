@@ -10,7 +10,7 @@ class PostController extends Controller
 {
     public function show(string $slug): View
     {
-        $post = Post::where('permalink', 'like', $slug)->first();
+        $post = Post::with('author')->where('permalink', 'like', $slug)->first();
 
         return view('pages.app.post.post', compact('post'));
     }

@@ -1,6 +1,12 @@
 {
     "/js/app.js": "/js/app.js",
+    "/js/web.js": "/js/web.js",
     "/js/admin.js": "/js/admin.js",
+    "/css/common.css": "/css/common.css",
+    "/css/web.css": "/css/web.css",
     "/css/admin.css": "/css/admin.css",
-    "/css/app.css": "/css/app.css"
+    "/js/skins/ui/oxide/skin.min.css": "/js/skins/ui/oxide/skin.min.css",
+    "/js/skins/content/default/content.css": "/js/skins/content/default/content.css",
+    "/js/skins/ui/oxide/content.min.css": "/js/skins/ui/oxide/content.min.css",
+    "/css/tinymce/content.min.css": "/css/tinymce/content.min.css"
 }

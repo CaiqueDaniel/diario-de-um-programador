@@ -12,7 +12,14 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js')
+    .ts('resources/js/web/index.ts', 'public/js/web.js')
     .ts('resources/js/admin/index.ts', 'public/js/admin.js')
-    .sass('resources/sass/app.scss', 'public/css')
+    .react()
+    .sass('resources/sass/common.scss', 'public/css')
+    .sass('resources/sass/web/web.scss', 'public/css')
     .sass('resources/sass/admin/admin.scss', 'public/css')
+    .copy('node_modules/tinymce/skins/ui/oxide/skin.min.css', 'public/js/skins/ui/oxide/skin.min.css')
+    .copy('node_modules/tinymce/skins/content/default/content.css', 'public/js/skins/content/default/content.css')
+    .copy('node_modules/tinymce/skins/content/default/content.min.css', 'public/js/skins/ui/oxide/content.min.css')
+    .copy('node_modules/tinymce/skins/ui/tinymce-5/content.min.css', 'public/css/tinymce/content.min.css')
     .sourceMaps();
