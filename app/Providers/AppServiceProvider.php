@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Pagination\Paginator;
+use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
@@ -23,9 +24,12 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(UrlGenerator $urlGenerator)
     {
         $this->registerDirectives();
+
+        if (env('APP_ENV') == 'production')
+            $urlGenerator->forceScheme('https');
     }
 
     private function registerDirectives()
