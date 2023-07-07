@@ -1,8 +1,13 @@
-@extends('layouts.app', ['pagename'=>'posts'])
-
 @php
     /** @var \App\Models\Post $post */
 @endphp
+
+@extends('layouts.app', [
+    'title'=>$post->title,
+    'description'=>$post->subtitle,
+    'thumbnail'=>$post->thumbnail,
+    'pagename'=>'posts',
+])
 
 @section('content')
     @include('pages.app.post.components.article-cover', ['post'=>$post])

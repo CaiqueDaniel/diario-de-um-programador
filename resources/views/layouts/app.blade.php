@@ -7,7 +7,19 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    @empty($title)
+        <title>{{ config('app.name', 'Laravel') }}</title>
+    @else
+        <title>{{ config('app.name', 'Laravel') }} - {{$title}}</title>
+    @endempty
+
+    @isset($description)
+        <meta name="description" content="{{$description}}">
+    @endisset
+
+    @isset($thumbnail)
+        <meta property="og:image" content="{{asset("/storage/{$thumbnail}")}}" />
+    @endisset
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
