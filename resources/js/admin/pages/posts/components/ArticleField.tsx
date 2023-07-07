@@ -59,11 +59,21 @@ export default function ArticleField(props: Props): JSX.Element {
         'lists',
         'wordcount'
     ];
-    const onInput = (value: string) => {
-        console.log(value)
 
-        input.value = value;
-    }
+    const codesample_languages = [
+        {text: 'HTML/XML', value: 'markup'},
+        {text: 'JavaScript', value: 'javascript'},
+        {text: 'TypeScript', value: 'typescript'},
+        {text: 'PHP', value: 'php'},
+        {text: 'CSS', value: 'css'},
+        {text: 'SCSS', value: 'scss'},
+        {text: 'JSON', value: 'json'},
+        {text: 'JSX', value: 'jsx'},
+        {text: 'Java', value: 'java'},
+        {text: 'Bash', value: 'bash'},
+    ];
+
+    const onInput = (value: string) => input.value = value;
 
     return (
         <>
@@ -75,10 +85,11 @@ export default function ArticleField(props: Props): JSX.Element {
                     height: 700,
                     menubar: true,
                     plugins: plugins.join(' '),
-                    toolbar: 'formatselect | bold italic underline strikethrough | forecolor backcolor blockquote | link image media | alignleft aligncenter alignright alignjustify | numlist bullist outdent indent | removeformat | fullscreen | codesample',
+                    toolbar: 'formatselect | bold italic underline strikethrough | forecolor backcolor blockquote | link image media | alignleft aligncenter alignright alignjustify | numlist bullist outdent indent | removeformat | codesample | fullscreen',
                     image_advtab: true,
-                    content_css:'/css/tinymce/content.min.css',
+                    content_css: '/css/tinymce/content.min.css',
                     content_style: 'body { font-family:Helvetica,Arial,sans-serif }',
+                    codesample_languages
                 }}
             />
         </>
