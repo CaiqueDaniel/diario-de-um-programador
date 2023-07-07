@@ -48,4 +48,14 @@ class Post extends Model
 
         return $builder->with('author')->paginate(self::LIMIT);
     }
+
+    public static function findAllWithoutTrashed(string $search = null): LengthAwarePaginator
+    {
+        $builder = static::query();
+
+        if (!empty($search))
+            $builder->where('title', 'like', '%' . $search . '%');
+
+        return $builder->with('author')->paginate(self::LIMIT);
+    }
 }

@@ -11,7 +11,7 @@ class HomeController extends Controller
 {
     public function index(): View
     {
-        $response = Post::findAll();
+        $response = Post::findAllWithoutTrashed();
 
         return view('pages.app.homepage.home', compact('response'));
     }
