@@ -30,7 +30,9 @@ Auth::routes(['register' => false]);
 
 Route::get('', [WebHomeController::class, 'index'])->name('web.home');
 Route::get('artigo/{slug}', [WebPostController::class, 'show'])->name('web.post.view');
-Route::get('categoria/{category:permalink}', [WebCategoryController::class, 'show'])->name('web.category.view');
+Route::get('categoria/{category:permalink}', [WebCategoryController::class, 'show'])
+    ->where('category','.+')
+    ->name('web.category.view');
 
 Route::middleware('auth')->prefix('painel')->group(function () {
     Route::get('', [AdminHomeController::class, 'index'])->name('admin.home');
