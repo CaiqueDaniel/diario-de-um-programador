@@ -29,12 +29,12 @@
                         {{__('Create new article')}}
                     </x-shortcut>
 
-                    <x-shortcut href="{{route('admin.post.create')}}">
+                    <x-shortcut href="{{route('admin.category.create')}}">
                         <i class="fa-regular fa-object-group" style="font-size: 50px;"></i>
                         {{__('Create new category')}}
                     </x-shortcut>
 
-                    <x-shortcut href="{{route('admin.post.create')}}">
+                    <x-shortcut href="{{route('admin.fullbanner.create')}}">
                         <i class="fa-regular fa-image" style="font-size: 50px;"></i>
                         {{__('Create new fullbanner')}}
                     </x-shortcut>

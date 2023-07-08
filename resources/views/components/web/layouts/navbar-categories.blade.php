@@ -9,7 +9,7 @@
 @empty($sublevel)
     <ul class="navbar-nav me-auto">
         @foreach($categories as $category)
-            @if(empty($category->getRelations()))
+            @if(empty($category->children()->count()))
                 <x-nav-item href="{{route('web.category.view', ['category'=>$category->permalink])}}">
                     {{$category->name}}
                 </x-nav-item>
