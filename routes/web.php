@@ -2,14 +2,15 @@
 
 use App\Http\Controllers\Admin\{
     HomeController as AdminHomeController,
-    CategoryController,
+    CategoryController as AdminCategoryController,
     FullBannerController,
     PostController as AdminPostController,
 };
 
 use App\Http\Controllers\Web\{
     HomeController as WebHomeController,
-    PostController as WebPostController
+    PostController as WebPostController,
+    CategoryController as WebCategoryController,
 };
 
 use Illuminate\Support\Facades\{Auth, Route};
@@ -27,9 +28,9 @@ use Illuminate\Support\Facades\{Auth, Route};
 
 Auth::routes(['register' => false]);
 
-Route::get('', [WebHomeController::class, 'index'])->name('app.home');
-
-Route::get('artigo/{slug}', [WebPostController::class, 'show'])->name('app.post.view');
+Route::get('', [WebHomeController::class, 'index'])->name('web.home');
+Route::get('artigo/{slug}', [WebPostController::class, 'show'])->name('web.post.view');
+Route::get('categoria/{category:permalink}', [WebCategoryController::class, 'show'])->name('web.category.view');
 
 Route::middleware('auth')->prefix('painel')->group(function () {
     Route::get('', [AdminHomeController::class, 'index'])->name('admin.home');
@@ -54,7 +55,7 @@ Route::middleware('auth')->prefix('painel')->group(function () {
     Route::prefix('categorias')->group(function () {
         Route::view('criar', 'pages.admin.category.form')->name('admin.category.create');
 
-        Route::controller(CategoryController::class)->group(function () {
+        Route::controller(AdminCategoryController::class)->group(function () {
             Route::get('listar', 'index')->name('admin.category.index');
             Route::get('editar/{category}', 'edit')->name('admin.category.edit')->withTrashed();
 

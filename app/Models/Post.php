@@ -46,7 +46,7 @@ class Post extends Model
         if (!empty($search))
             $builder->where('title', 'like', '%' . $search . '%');
 
-        return $builder->with('author')->orderBy('id','desc')->paginate(self::LIMIT);
+        return $builder->with('author')->orderBy('id', 'desc')->paginate(self::LIMIT);
     }
 
     public static function findAllWithoutTrashed(string $search = null): LengthAwarePaginator
@@ -56,6 +56,11 @@ class Post extends Model
         if (!empty($search))
             $builder->where('title', 'like', '%' . $search . '%');
 
-        return $builder->with('author')->orderBy('id','desc')->paginate(self::LIMIT);
+        return $builder->with('author')->orderBy('id', 'desc')->paginate(self::LIMIT);
+    }
+
+    public static function findAllWithoutTrashedByCategory(Category $category): LengthAwarePaginator
+    {
+        return $category->posts()->orderBy('id', 'desc')->paginate(self::LIMIT);
     }
 }
