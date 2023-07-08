@@ -18,7 +18,7 @@
     @endisset
 
     @isset($thumbnail)
-        <meta property="og:image" content="{{asset("/storage/{$thumbnail}")}}" />
+        <meta property="og:image" content="{{asset("/storage/{$thumbnail}")}}"/>
     @endisset
 
     <!-- Scripts -->
@@ -47,9 +47,7 @@
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <!-- Left Side Of Navbar -->
-                <ul class="navbar-nav me-auto">
-
-                </ul>
+                <x-web.layouts.navbar-categories/>
 
                 <!-- Right Side Of Navbar -->
                 <ul class="navbar-nav ms-auto">
@@ -70,7 +68,7 @@
                      <div class="col-lg-2 col-md-6 mb-4 mb-lg-0">
                          <h6 class="text-uppercase font-weight-bold mb-4">Site</h6>
                          <ul class="list-unstyled mb-0">
-                             <li class="mb-2"><a href="{{route('app.home')}}" class="text-muted">Home</a></li>
+                             <li class="mb-2"><a href="{{route('web.home')}}" class="text-muted">Home</a></li>
                              --}}{{--<li class="mb-2"><a href="#" class="text-muted">Register</a></li>
                              <li class="mb-2"><a href="#" class="text-muted">Wishlist</a></li>
                              <li class="mb-2"><a href="#" class="text-muted">Our Products</a></li>--}}{{--

@@ -13,6 +13,6 @@ class HomeController extends Controller
     {
         $response = Post::findAllWithoutTrashed();
 
-        return view('pages.app.homepage.home', compact('response'));
+        return view('pages.web.homepage.home', compact('response'));
     }
 }

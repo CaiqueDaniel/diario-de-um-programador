@@ -2,7 +2,7 @@
     /** @var \App\Models\Post $post */
 @endphp
 
-@extends('layouts.app', [
+@extends('layouts.web', [
     'title'=>$post->title,
     'description'=>$post->subtitle,
     'thumbnail'=>$post->thumbnail,
@@ -10,7 +10,7 @@
 ])
 
 @section('content')
-    @include('pages.app.post.components.article-cover', ['post'=>$post])
+    @include('pages.web.post.components.article-cover', ['post'=>$post])
 
     <div class="container mt-4 w-md-50 px-3 px-md-5">
         <div>
