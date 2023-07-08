@@ -1,20 +1,18 @@
 <?php
 
 use App\Http\Controllers\Admin\{
+    HomeController as AdminHomeController,
     CategoryController,
     FullBannerController,
-    PostController as AdminPostController
+    PostController as AdminPostController,
 };
 
 use App\Http\Controllers\Web\{
-    HomeController,
+    HomeController as WebHomeController,
     PostController as WebPostController
 };
 
-use Illuminate\Support\Facades\{
-    Auth,
-    Route
-};
+use Illuminate\Support\Facades\{Auth, Route};
 
 /*
 |--------------------------------------------------------------------------
@@ -29,11 +27,13 @@ use Illuminate\Support\Facades\{
 
 Auth::routes(['register' => false]);
 
-Route::get('', [HomeController::class, 'index'])->name('app.home');
+Route::get('', [WebHomeController::class, 'index'])->name('app.home');
 
 Route::get('artigo/{slug}', [WebPostController::class, 'show'])->name('app.post.view');
 
 Route::middleware('auth')->prefix('painel')->group(function () {
+    Route::get('', [AdminHomeController::class, 'index'])->name('admin.home');
+
     Route::prefix('artigos')->group(function () {
         Route::view('criar', 'pages.admin.post.form')->name('admin.post.create');
 
@@ -85,5 +85,3 @@ Route::middleware('auth')->prefix('painel')->group(function () {
         });
     });
 });
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
