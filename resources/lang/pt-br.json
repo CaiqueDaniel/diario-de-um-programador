@@ -19,5 +19,11 @@
     "Logout": "Sair",
     "Reset Password": "Redefinir Senha",
     "Send Password Reset Link": "Solicitar redefinição de senha",
-    "No items found": "Nenhum item encontrado"
+    "No items found": "Nenhum item encontrado",
+    "Welcome back": "Bem-vindo de volta",
+    "Create new article": "Criar novo artigo",
+    "Create new category": "Criar nova categoria",
+    "Create new fullbanner": "Criar novo fullbanner",
+    "Position": "Posição",
+    "Image": "Imagem"
 }
