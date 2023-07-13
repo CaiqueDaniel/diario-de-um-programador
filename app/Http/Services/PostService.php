@@ -20,10 +20,8 @@ class PostService
         $this->fileUploadService = $fileUploadService;
     }
 
-    public function store(Request $request): Post
+    public function store(User $user, Request $request): Post
     {
-        /** @var User $user */
-        $user = auth()->user();
         $post = new Post($request->only(self::FILLABLE_KEYS));
 
         $this->definePermalink($post);

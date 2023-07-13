@@ -3,7 +3,7 @@
 @section('content')
     @php
         /** @var \App\Models\Post $post */
-        $action = empty($post) ? route('admin.post.store') : route('admin.post.update', ['post' => $post->id]);
+        $action = empty($post) ? route('admin.post.store') : route('admin.post.update', ['post' => $post->getId()]);
     @endphp
 
     <div id="post-form" class="container">

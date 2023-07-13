@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Get\SearchRequest;
 use App\Http\Requests\Post\PostRequest;
 use App\Http\Services\PostService;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\View\View;
@@ -29,7 +30,10 @@ class PostController extends Controller
 
     public function store(PostRequest $request): RedirectResponse
     {
-        $this->postService->store($request);
+        /** @var User $user */
+        $user = auth()->user();
+
+        $this->postService->store($user, $request);
 
         session()->flash('message', 'Artigo criado com sucesso');
 
