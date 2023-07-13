@@ -4,22 +4,12 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use DateTime;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\{Model, Builder, SoftDeletes};
+use Illuminate\Database\Eloquent\Relations\{BelongsTo, BelongsToMany};
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Throwable;
 
-/**
- * @property string $title
- * @property string $subtitle
- * @property string $article
- * @property string $permalink
- * @property string $thumbnail
- */
 class Post extends Model
 {
     use HasFactory, SoftDeletes;
@@ -54,6 +44,31 @@ class Post extends Model
         return $this->attributes['id'];
     }
 
+    public function getTitle(): string
+    {
+        return $this->attributes['title'];
+    }
+
+    public function getSubtitle(): string
+    {
+        return $this->attributes['subtitle'];
+    }
+
+    public function getArticle(): string
+    {
+        return $this->attributes['article'];
+    }
+
+    public function getPermalink(): string
+    {
+        return $this->attributes['permalink'];
+    }
+
+    public function getThumbnail(): string
+    {
+        return $this->attributes['thumbnail'];
+    }
+
     public function getCreatedAt(): string
     {
         return $this->attributes['created_at'];
@@ -77,6 +92,18 @@ class Post extends Model
             return null;
 
         return new Carbon($this->attributes['published_at']);
+    }
+
+    public function setPermalink(string $value): self
+    {
+        $this->attributes['permalink'] = $value;
+        return $this;
+    }
+
+    public function setThumbnail(string $value): self
+    {
+        $this->attributes['thumbnail'] = $value;
+        return $this;
     }
 
     private function setPublishedAt(DateTime $value): self

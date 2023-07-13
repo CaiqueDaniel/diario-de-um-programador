@@ -21,7 +21,7 @@
                     <div class="mb-3">
                         <label for="title" class="form-label">{{__('Title')}}*</label>
                         <input type="text" name="title" class="form-control" id="title"
-                               value="{{$post->title ?? old('title')}}" required>
+                               value="{{!empty($post) ? $post->getTitle() : old('title')}}" required>
 
                         <x-alerts.invalid-field field="title"/>
                     </div>
@@ -29,7 +29,7 @@
                     <div class="mb-3">
                         <label for="subtitle" class="form-label">{{__('Subtitle')}}*</label>
                         <textarea class="form-control" name="subtitle" id="subtitle" rows="3"
-                                  required>{{$post->subtitle ?? old('subtitle') }}</textarea>
+                                  required>{{!empty($post) ? $post->getSubtitle() : old('subtitle') }}</textarea>
 
                         <x-alerts.invalid-field field="subtitle"/>
                     </div>
@@ -38,7 +38,7 @@
                         <label for="article" class="form-label">{{__('Thumbnail')}}*</label>
 
                         @if(!empty($post))
-                            <img src="{{asset('storage/'.$post->thumbnail)}}" alt="Thumbnail" class="mb-3"
+                            <img src="{{asset('storage/'.$post->getThumbnail())}}" alt="Thumbnail" class="mb-3"
                                  style="width: 100%"/>
                         @endif
 
@@ -52,7 +52,8 @@
 
                         <div id="article-root"></div>
 
-                        <input type="hidden" id="article" name="article" value="{{$post->article ?? old('article')}}"/>
+                        <input type="hidden" id="article" name="article"
+                               value="{{!empty($post) ? $post->getArticle() : old('article')}}"/>
 
                         <x-alerts.invalid-field field="article"/>
                     </div>
@@ -63,7 +64,8 @@
                         @empty($post)
                             <x-category-selection name="categories[]" multiple="true"/>
                         @else
-                            <x-category-selection name="categories[]" multiple="true" :selected="$post->categories()->get()"/>
+                            <x-category-selection name="categories[]" multiple="true"
+                                                  :selected="$post->categories()->get()"/>
                         @endempty
 
                         <x-alerts.invalid-field field="categories.*"/>

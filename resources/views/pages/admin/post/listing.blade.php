@@ -27,7 +27,7 @@
                 @foreach($items as $item)
                     <ul class="list-group list-group-horizontal-md mb-1">
                         <li class="list-group-item col-md-5">
-                            <b class="d-md-none">{{__('Title')}}: </b>{{$item->title}}
+                            <b class="d-md-none">{{__('Title')}}: </b>{{$item->getTitle()}}
                         </li>
 
                         <li class="list-group-item col-md-3">

@@ -3,9 +3,9 @@
 @endphp
 
 @extends('layouts.web', [
-    'title'=>$post->title,
-    'description'=>$post->subtitle,
-    'thumbnail'=>$post->thumbnail,
+    'title'=>$post->getTitle(),
+    'description'=>$post->getSubtitle(),
+    'thumbnail'=>$post->getThumbnail(),
     'pagename'=>'posts',
 ])
 
@@ -20,7 +20,7 @@
         </div>
 
         <article class="mt-4" style="text-align: justify">
-            {!! $post->article !!}
+            {!! $post->getArticle() !!}
         </article>
     </div>
 @endsection

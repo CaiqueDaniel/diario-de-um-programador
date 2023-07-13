@@ -54,13 +54,13 @@ class PostService
     {
         $post->forceDelete();
 
-        $this->fileUploadService->delete($post->thumbnail);
+        $this->fileUploadService->delete($post->getThumbnail());
     }
 
     private function definePermalink(Post $post): void
     {
         $slugfy = new Slugify();
-        $post->permalink = $slugfy->slugify($post->title);
+        $post->setPermalink($slugfy->slugify($post->getTitle()));
     }
 
     private function defineThumbnail(Post $post, Request $request): void
@@ -75,6 +75,6 @@ class PostService
         if (!empty($post->thumbnail))
             $this->fileUploadService->delete($post->thumbnail);
 
-        $post->thumbnail = $thumbnail;
+        $post->setThumbnail($thumbnail);
     }
 }
