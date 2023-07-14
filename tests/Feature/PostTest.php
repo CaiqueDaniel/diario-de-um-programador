@@ -79,8 +79,8 @@ class PostTest extends TestCase
         /** @var Post $post $post */
         $post = Post::where('title', 'like', $title)->first();
 
-        $this->assertNotNull($post->permalink);
-        $this->assertNotNull($post->thumbnail);
+        $this->assertNotNull($post->getPermalink());
+        $this->assertNotNull($post->getThumbnail());
     }
 
     public function test_create_with_category_post(): void
@@ -115,8 +115,8 @@ class PostTest extends TestCase
         /** @var Post $post $post */
         $post = Post::with('categories')->where('title', 'like', $title)->first();
 
-        $this->assertNotNull($post->permalink);
-        $this->assertNotNull($post->thumbnail);
+        $this->assertNotNull($post->getPermalink());
+        $this->assertNotNull($post->getThumbnail());
         $this->assertNotEmpty($post->getRelation('categories'));
         $this->assertCount(1, $post->getRelation('categories'));
     }

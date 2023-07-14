@@ -14,7 +14,7 @@ class PostRequest extends FormRequest
 
         /** @var Post $post */
         if (!empty($post = $this->route('post')))
-            $unique->ignore($post->id);
+            $unique->ignore($post->getId());
 
         $thumbnailRules = ['max:8196', 'mimes:jpg,jpeg,png,webp'];
 
