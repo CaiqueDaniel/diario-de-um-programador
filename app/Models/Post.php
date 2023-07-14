@@ -94,6 +94,25 @@ class Post extends Model
         return new Carbon($this->attributes['published_at']);
     }
 
+
+    public function setTitle(string $value): self
+    {
+        $this->attributes['title'] = $value;
+        return $this;
+    }
+
+    public function setSubtitle(string $value): self
+    {
+        $this->attributes['subtitle'] = $value;
+        return $this;
+    }
+
+    public function setArticle(string $value): self
+    {
+        $this->attributes['article'] = $value;
+        return $this;
+    }
+
     public function setPermalink(string $value): self
     {
         $this->attributes['permalink'] = $value;

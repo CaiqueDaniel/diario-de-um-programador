@@ -19,22 +19,24 @@ class PostTest extends TestCase implements CRUDTest, SoftDeleteTest
 {
     use RefreshDatabase, WithFaker;
 
+    private User $user;
+
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->migrateFreshUsing();
 
-        $user = new User([
+        $this->user = new User([
             'name' => $this->faker->name(),
             'email' => $this->faker->email(),
             'password' => Hash::make('123456'),
         ]);
 
-        $user->save();
+        $this->user->save();
 
         $this->post('/login', [
-            'email' => $user->email,
+            'email' => $this->user->email,
             'password' => '123456'
         ]);
     }
@@ -125,7 +127,26 @@ class PostTest extends TestCase implements CRUDTest, SoftDeleteTest
 
     public function test_deletion(): void
     {
-        // TODO: Implement test_deletion() method.
+        $title = $this->faker->name();
+
+        $post = new Post();
+        $post->setTitle($title)
+            ->setSubtitle($this->faker->text())
+            ->setArticle($this->faker->text())
+            ->setPermalink($title)
+            ->setThumbnail(UploadedFile::fake()->create($this->faker->name() . '.jpg'));
+
+        $this->user->posts()->save($post);
+
+        $this->assertDatabaseHas(Post::class, ['id' => $post->getId()]);
+
+        $response = $this->delete(route('admin.post.destroy', ['post' => $post->getId()]));
+
+        $response
+            ->assertRedirect()
+            ->assertSessionHas('message', 'Artigo removido com sucesso');
+
+        $this->assertDatabaseMissing(Post::class, ['id' => $post->getId()]);
     }
 
     public function test_search_with_results(): void
