@@ -5,8 +5,10 @@ namespace Tests\Feature;
 use App\Models\Category;
 use App\Models\User;
 use Cocur\Slugify\Slugify;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
@@ -318,5 +320,46 @@ class CategoryTest extends TestCase
         $response
             ->assertRedirect()
             ->assertInvalid(['parent']);
+    }
+
+    public function test_search_with_results(): void
+    {
+        $slugfy = new Slugify();
+
+        DB::transaction(function () use ($slugfy) {
+            for ($i = 0; $i < 10; $i++) {
+                $category = new Category(['name' => $this->faker->userName()]);
+                $category->setPermalink($slugfy->slugify($category->getName()))->saveOrFail();
+            }
+        });
+
+        $category = Category::all()->first();
+        $response = $this->get("/painel/categorias/listar?search={$category->getName()}");
+
+        $expected = new Collection();
+
+        $expected->add($category);
+
+        $response
+            ->assertOk()
+            ->assertViewHas('items', $expected);
+    }
+
+    public function test_search_without_results(): void
+    {
+        $slugfy = new Slugify();
+
+        DB::transaction(function () use ($slugfy) {
+            for ($i = 0; $i < 10; $i++) {
+                $category = new Category(['name' => $this->faker->userName()]);
+                $category->setPermalink($slugfy->slugify($category->getName()))->saveOrFail();
+            }
+        });
+
+        $response = $this->get("/painel/categorias/listar?search=invalid");
+
+        $response
+            ->assertOk()
+            ->assertViewHas('items', new Collection());
     }
 }
