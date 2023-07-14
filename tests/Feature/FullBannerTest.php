@@ -177,4 +177,14 @@ class FullBannerTest extends TestCase implements CRUDTest, SoftDeleteTest
 
         $this->assertTrue($banner->trashed());
     }
+
+    public function test_search_with_results(): void
+    {
+        // TODO: Implement test_search_with_results() method.
+    }
+
+    public function test_search_without_results(): void
+    {
+        // TODO: Implement test_search_without_results() method.
+    }
 }
