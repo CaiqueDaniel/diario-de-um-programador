@@ -10,9 +10,14 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Tests\Feature\Interfaces\CRUDTest;
+use Tests\Feature\Interfaces\DeleteTest;
+use Tests\Feature\Interfaces\ListTest;
+use Tests\Feature\Interfaces\LoadFormTest;
+use Tests\Feature\Interfaces\SoftDeleteTest;
 use Tests\TestCase;
 
-class CategoryTest extends TestCase
+class CategoryTest extends TestCase implements LoadFormTest, ListTest, DeleteTest, SoftDeleteTest
 {
     use RefreshDatabase, WithFaker;
 
@@ -38,7 +43,7 @@ class CategoryTest extends TestCase
         ]);
     }
 
-    public function test_list_categories(): void
+    public function test_listing(): void
     {
         $this->assertAuthenticatedAs($this->user);
 
@@ -48,7 +53,7 @@ class CategoryTest extends TestCase
             ->assertViewIs('pages.admin.category.listing');
     }
 
-    public function test_load_category_create_form(): void
+    public function test_load_form_create(): void
     {
         $this->assertAuthenticatedAs($this->user);
 
@@ -205,7 +210,7 @@ class CategoryTest extends TestCase
         $response->assertStatus(405);
     }
 
-    public function test_disabling_category(): void
+    public function test_disabling_item(): void
     {
         $slugfy = new Slugify();
         $category = new Category(['name' => $this->faker->userName()]);
@@ -222,7 +227,7 @@ class CategoryTest extends TestCase
         $this->assertNotNull($category->deleted_at);
     }
 
-    public function test_enabling_category(): void
+    public function test_enabling_item(): void
     {
         $slugfy = new Slugify();
         $category = new Category(['name' => $this->faker->userName()]);
@@ -246,7 +251,7 @@ class CategoryTest extends TestCase
         $this->assertNull($category->deleted_at);
     }
 
-    public function test_deleting_category(): void
+    public function test_deletion(): void
     {
         $slugfy = new Slugify();
         $category = new Category(['name' => $this->faker->userName()]);
