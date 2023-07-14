@@ -11,9 +11,11 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Tests\Feature\Interfaces\CRUDTest;
+use Tests\Feature\Interfaces\SoftDeleteTest;
 use Tests\TestCase;
 
-class PostTest extends TestCase
+class PostTest extends TestCase implements CRUDTest, SoftDeleteTest
 {
     use RefreshDatabase, WithFaker;
 
@@ -37,7 +39,7 @@ class PostTest extends TestCase
         ]);
     }
 
-    public function test_list_posts(): void
+    public function test_listing(): void
     {
         $response = $this->get('/painel/artigos/listar');
 
@@ -46,7 +48,7 @@ class PostTest extends TestCase
             ->assertViewIs('pages.admin.post.listing');
     }
 
-    public function test_load_posts_create_form(): void
+    public function test_load_form_create(): void
     {
         $response = $this->get('/painel/artigos/criar');
 
@@ -55,7 +57,7 @@ class PostTest extends TestCase
             ->assertViewIs('pages.admin.post.form');
     }
 
-    public function test_create_post(): void
+    public function test_creation(): void
     {
         Storage::fake('local');
 
@@ -83,11 +85,11 @@ class PostTest extends TestCase
         $this->assertNotNull($post->getThumbnail());
     }
 
-    public function test_create_with_category_post(): void
+    public function test_creation_with_category(): void
     {
         $slugfy = new Slugify();
         $category = new Category(['name' => $this->faker->userName()]);
-        $category->permalink = $slugfy->slugify($category->name);
+        $category->setPermalink($slugfy->slugify($category->getName()));
         $category->save();
 
         $this->assertDatabaseHas(Category::class, $category->toArray());
@@ -103,7 +105,7 @@ class PostTest extends TestCase
             'subtitle' => $subtitle,
             'article' => $article,
             'thumbnail' => UploadedFile::fake()->create($this->faker->name() . '.jpg'),
-            'categories' => [$category->id]
+            'categories' => [$category->getId()]
         ]);
 
         $response
@@ -119,5 +121,35 @@ class PostTest extends TestCase
         $this->assertNotNull($post->getThumbnail());
         $this->assertNotEmpty($post->getRelation('categories'));
         $this->assertCount(1, $post->getRelation('categories'));
+    }
+
+    public function test_deletion(): void
+    {
+        // TODO: Implement test_deletion() method.
+    }
+
+    public function test_search_with_results(): void
+    {
+        // TODO: Implement test_search_with_results() method.
+    }
+
+    public function test_search_without_results(): void
+    {
+        // TODO: Implement test_search_without_results() method.
+    }
+
+    public function test_enabling_item(): void
+    {
+        // TODO: Implement test_enabling_item() method.
+    }
+
+    public function test_disabling_item(): void
+    {
+        // TODO: Implement test_disabling_item() method.
+    }
+
+    public function test_update(): void
+    {
+        // TODO: Implement test_update() method.
     }
 }
