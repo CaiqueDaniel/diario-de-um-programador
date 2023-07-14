@@ -29,13 +29,13 @@ class CategoryController extends Controller
         $category = new Category($request->only(self::FILLABLE_KEYS));
 
         /** @var Category $parentCategory */
-        $parentCategory = Category::find($request->get('parent'));
+        $parentCategory = Category::query()->find($request->get('parent'));
 
         if (empty($parentCategory)) {
-            $category->permalink = $slugfy->slugify($category->name);
+            $category->setPermalink($slugfy->slugify($category->getName()));
             $category->save();
         } else {
-            $category->permalink = "{$parentCategory->permalink}/{$slugfy->slugify($category->name)}";
+            $category->setPermalink("{$parentCategory->getPermalink()}/{$slugfy->slugify($category->getName())}");
             $parentCategory->children()->save($category);
         }
 
@@ -55,7 +55,7 @@ class CategoryController extends Controller
         $category->fill($request->only(self::FILLABLE_KEYS));
 
         /** @var Category $parentCategory */
-        $parentCategory = Category::find($request->get('parent'));
+        $parentCategory = Category::query()->find($request->get('parent'));
 
         if (empty($parentCategory)) {
             $parentCategory = $category->parent()->first();
@@ -63,10 +63,10 @@ class CategoryController extends Controller
             if (!empty($parentCategory))
                 $category->parent()->disassociate();
 
-            $category->permalink = $slugfy->slugify($category->name);
+            $category->setPermalink($slugfy->slugify($category->getName()));
             $category->save();
         } else {
-            $category->permalink = "{$parentCategory->permalink}/{$slugfy->slugify($category->name)}";
+            $category->setPermalink("{$parentCategory->getPermalink()}/{$slugfy->slugify($category->getName())}");
             $parentCategory->children()->save($category);
         }
 

@@ -26,11 +26,11 @@
 
                     <ul class="list-group list-group-horizontal-md mb-1">
                         <li class="list-group-item col-md-5">
-                            <b class="d-md-none">{{__('Title')}}: </b>{{$item->name}}
+                            <b class="d-md-none">{{__('Category')}}: </b>{{$item->getName()}}
                         </li>
 
                         <li class="list-group-item col-md-5">
-                            <b class="d-md-none">{{__('Author')}}: </b>{{$item->permalink}}
+                            <b class="d-md-none">{{__('Permalink')}}: </b>{{$item->getPermalink()}}
                         </li>
 
                         <li class="list-group-item col-md-2 d-flex align-items-center justify-content-evenly">
@@ -38,13 +38,14 @@
                                 <input
                                     class="form-check-input"
                                     type="checkbox"
-                                    data-restore="{{route('admin.category.restore', ['category' => $item->id])}}"
-                                    data-trash="{{route('admin.category.trash', ['category' => $item->id])}}"
+                                    data-restore="{{route('admin.category.restore', ['category' => $item->getId()])}}"
+                                    data-trash="{{route('admin.category.trash', ['category' => $item->getId()])}}"
                                     role="switch" {{$item->trashed()?'':'checked'}}
                                 />
                             </div>
 
-                            <a class="btn btn-sm btn-outline-warning" href="{{route('admin.category.edit', $item->id)}}">
+                            <a class="btn btn-sm btn-outline-warning"
+                               href="{{route('admin.category.edit', $item->getId())}}">
                                 <i class="fa-regular fa-pen-to-square"></i>
                             </a>
 

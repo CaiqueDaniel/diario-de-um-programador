@@ -3,18 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\{Model, SoftDeletes};
+use Illuminate\Database\Eloquent\Relations\{BelongsTo, BelongsToMany, HasMany};
 
-/**
- * @property int $id
- * @property string $name
- * @property string $permalink
- * @property string $deleted_at
- */
 class Category extends Model
 {
     use HasFactory, SoftDeletes;
@@ -35,5 +26,26 @@ class Category extends Model
     public function posts(): BelongsToMany
     {
         return $this->belongsToMany(Post::class, 'posts_categories', 'category', 'post');
+    }
+
+    public function getId(): int
+    {
+        return $this->attributes['id'];
+    }
+
+    public function getName(): string
+    {
+        return $this->attributes['name'];
+    }
+
+    public function getPermalink(): string
+    {
+        return $this->attributes['permalink'];
+    }
+
+    public function setPermalink(string $value): self
+    {
+        $this->attributes['permalink'] = $value;
+        return $this;
     }
 }
