@@ -3,11 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\{Model, SoftDeletes};
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\{Builder, Model, SoftDeletes};
 
 class FullBanner extends Model
 {
     use HasFactory, SoftDeletes;
+
+    private const LIMIT = 30;
 
     public $timestamps = false;
     protected $fillable = ['title', 'link', 'image', 'position'];
@@ -55,5 +58,16 @@ class FullBanner extends Model
     public function setPosition(int $value): int
     {
         return $this->attributes['position'] = $value;
+    }
+
+    public static function findAll(string $search = null): LengthAwarePaginator
+    {
+        /** @var Builder $builder */
+        $builder = static::withTrashed();
+
+        if (!empty($search))
+            $builder->where('title', 'like', '%' . $search . '%');
+
+        return $builder->orderBy('position', 'desc')->paginate(self::LIMIT);
     }
 }

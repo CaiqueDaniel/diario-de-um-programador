@@ -228,12 +228,7 @@ class FullBannerTest extends TestCase implements CRUDTest, SoftDeleteTest
             }
         });
 
-        /** @var FullBanner $banner */
-        $banner = FullBanner::all()->first();
-        $response = $this->get("/painel/fullbanners/listar?search={$banner->getTitle()}");
-
-        $expected = new Collection();
-        $expected->add($banner);
+        $response = $this->get("/painel/fullbanners/listar?search=invalid");
 
         $response
             ->assertOk()

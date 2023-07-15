@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Get\SearchRequest;
 use App\Http\Requests\Post\FullBannerRequest;
 use App\Http\Services\FullBannerService;
 use App\Models\FullBanner;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
 use Throwable;
@@ -21,9 +21,9 @@ class FullBannerController extends Controller
         $this->fullBannerService = $fullBannerService;
     }
 
-    public function index(): View
+    public function index(SearchRequest $request): View
     {
-        $response = FullBanner::withTrashed()->paginate();
+        $response = FullBanner::findAll($request->get('search'));
 
         return view('pages.admin.fullbanner.listing', compact('response'));
     }
