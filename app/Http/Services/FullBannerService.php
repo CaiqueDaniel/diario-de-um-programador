@@ -32,7 +32,7 @@ class FullBannerService
 
         $this->defineImage($fullbanner, $request);
 
-        $fullbanner->position = $total + 1;
+        $fullbanner->setPosition($total + 1);
         $fullbanner->saveOrFail();
 
         return $fullbanner;
@@ -57,7 +57,7 @@ class FullBannerService
 
     public function destroy(FullBanner $fullbanner): void
     {
-        $this->fileUploadService->delete($fullbanner->image);
+        $this->fileUploadService->delete($fullbanner->getImage());
 
         $fullbanner->forceDelete();
     }
@@ -74,6 +74,6 @@ class FullBannerService
         if (!empty($fullbanner->image))
             $this->fileUploadService->delete($fullbanner->image);
 
-        $fullbanner->image = $image;
+        $fullbanner->setImage($image);
     }
 }

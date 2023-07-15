@@ -3,9 +3,9 @@
 @endphp
 
 @extends('layouts.web', [
-    'title'=>$post->title,
-    'description'=>$post->subtitle,
-    'thumbnail'=>$post->thumbnail,
+    'title'=>$post->getTitle(),
+    'description'=>$post->getSubtitle(),
+    'thumbnail'=>$post->getThumbnail(),
     'pagename'=>'posts',
 ])
 
@@ -15,11 +15,12 @@
     <div class="container mt-4 w-md-50 px-3 px-md-5">
         <div>
             <b>Por: {{$post->getRelation('author')->name}}</b><br/>
-            <time datetime="{{$post->created_at}}">Em: @datetime($post->created_at)</time>
+            @php($publishedAt = $post->getPublishedAt())
+            <time datetime="{{$post->getPublishedAt()}}">Em: @datetime($publishedAt)</time>
         </div>
 
         <article class="mt-4" style="text-align: justify">
-            {!! $post->article !!}
+            {!! $post->getArticle() !!}
         </article>
     </div>
 @endsection

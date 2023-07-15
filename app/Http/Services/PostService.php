@@ -20,10 +20,8 @@ class PostService
         $this->fileUploadService = $fileUploadService;
     }
 
-    public function store(Request $request): Post
+    public function store(User $user, Request $request): Post
     {
-        /** @var User $user */
-        $user = auth()->user();
         $post = new Post($request->only(self::FILLABLE_KEYS));
 
         $this->definePermalink($post);
@@ -56,13 +54,13 @@ class PostService
     {
         $post->forceDelete();
 
-        $this->fileUploadService->delete($post->thumbnail);
+        $this->fileUploadService->delete($post->getThumbnail());
     }
 
     private function definePermalink(Post $post): void
     {
         $slugfy = new Slugify();
-        $post->permalink = $slugfy->slugify($post->title);
+        $post->setPermalink($slugfy->slugify($post->getTitle()));
     }
 
     private function defineThumbnail(Post $post, Request $request): void
@@ -77,6 +75,6 @@ class PostService
         if (!empty($post->thumbnail))
             $this->fileUploadService->delete($post->thumbnail);
 
-        $post->thumbnail = $thumbnail;
+        $post->setThumbnail($thumbnail);
     }
 }

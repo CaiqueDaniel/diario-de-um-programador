@@ -4,7 +4,7 @@
     @php
         /** @var \App\Models\Category $category */
 
-        $action = empty($category) ? route('admin.category.store') : route('admin.category.update', ['category' => $category->id]);
+        $action = empty($category) ? route('admin.category.store') : route('admin.category.update', ['category' => $category->getId()]);
     @endphp
 
     <div class="container">
@@ -22,7 +22,7 @@
                     <div class="mb-3">
                         <label for="name" class="form-label">{{__('Category')}}</label>
                         <input type="text" name="name" class="form-control" id="name"
-                               value="{{$category->name ?? old('name')}}" required>
+                               value="{{!empty($category) ? $category->getName() : old('name')}}" required>
 
                         <x-alerts.invalid-field field="name"/>
                     </div>

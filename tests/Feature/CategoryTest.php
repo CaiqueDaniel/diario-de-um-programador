@@ -5,12 +5,19 @@ namespace Tests\Feature;
 use App\Models\Category;
 use App\Models\User;
 use Cocur\Slugify\Slugify;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Tests\Feature\Interfaces\CRUDTest;
+use Tests\Feature\Interfaces\DeleteTest;
+use Tests\Feature\Interfaces\ListTest;
+use Tests\Feature\Interfaces\LoadFormTest;
+use Tests\Feature\Interfaces\SoftDeleteTest;
 use Tests\TestCase;
 
-class CategoryTest extends TestCase
+class CategoryTest extends TestCase implements LoadFormTest, ListTest, DeleteTest, SoftDeleteTest
 {
     use RefreshDatabase, WithFaker;
 
@@ -36,7 +43,7 @@ class CategoryTest extends TestCase
         ]);
     }
 
-    public function test_list_categories(): void
+    public function test_listing(): void
     {
         $this->assertAuthenticatedAs($this->user);
 
@@ -46,7 +53,7 @@ class CategoryTest extends TestCase
             ->assertViewIs('pages.admin.category.listing');
     }
 
-    public function test_load_category_create_form(): void
+    public function test_load_form_create(): void
     {
         $this->assertAuthenticatedAs($this->user);
 
@@ -72,13 +79,13 @@ class CategoryTest extends TestCase
     {
         $slugfy = new Slugify();
         $parent = new Category(['name' => $this->faker->userName()]);
-        $parent->permalink = $slugfy->slugify($parent->name);
+        $parent->setPermalink($slugfy->slugify($parent->getName()));
         $parent->save();
 
         $this->assertDatabaseHas(Category::class, $parent->toArray());
 
         $name = $this->faker->userName();
-        $response = $this->post('/painel/categorias', ['name' => $name, 'parent' => $parent->id]);
+        $response = $this->post('/painel/categorias', ['name' => $name, 'parent' => $parent->getId()]);
 
         $response
             ->assertRedirect()
@@ -91,13 +98,13 @@ class CategoryTest extends TestCase
     {
         $slugfy = new Slugify();
         $category = new Category(['name' => $this->faker->userName()]);
-        $category->permalink = $slugfy->slugify($category->name);
+        $category->setPermalink($slugfy->slugify($category->getName()));
         $category->save();
 
         $this->assertDatabaseHas(Category::class, $category->toArray());
 
         $name = $this->faker->userName();
-        $response = $this->put("/painel/categorias/{$category->id}", ['name' => $name]);
+        $response = $this->put("/painel/categorias/{$category->getId()}", ['name' => $name]);
 
         $response
             ->assertRedirect()
@@ -108,9 +115,9 @@ class CategoryTest extends TestCase
         /** @var Category $editedCategory */
         $editedCategory = Category::where('name', 'like', $name)->first();
 
-        $this->assertEquals($category->id, $editedCategory->id);
-        $this->assertNotEquals($category->name, $editedCategory->name);
-        $this->assertNotEquals($category->permalink, $editedCategory->permalink);
+        $this->assertEquals($category->getId(), $editedCategory->getId());
+        $this->assertNotEquals($category->getName(), $editedCategory->getName());
+        $this->assertNotEquals($category->getPermalink(), $editedCategory->getPermalink());
     }
 
     public function test_edit_nested_category_with_same_parent(): void
@@ -118,20 +125,20 @@ class CategoryTest extends TestCase
         $slugfy = new Slugify();
 
         $firstParent = new Category(['name' => $this->faker->userName()]);
-        $firstParent->permalink = $slugfy->slugify($firstParent->name);
+        $firstParent->setPermalink($slugfy->slugify($firstParent->getName()));
         $firstParent->save();
 
         $this->assertDatabaseHas(Category::class, $firstParent->toArray());
 
         $category = new Category(['name' => $this->faker->userName()]);
-        $category->permalink = $slugfy->slugify($category->name);
+        $category->setPermalink($slugfy->slugify($category->getName()));
         $firstParent->children()->save($category);
 
         $this->assertDatabaseHas(Category::class, $category->toArray());
         $this->assertNotNull($category->parent()->first());
 
         $name = $this->faker->userName();
-        $response = $this->put("/painel/categorias/{$category->id}", ['name' => $name, 'parent' => $firstParent->id]);
+        $response = $this->put("/painel/categorias/{$category->getId()}", ['name' => $name, 'parent' => $firstParent->getId()]);
 
         $response
             ->assertRedirect()
@@ -140,12 +147,12 @@ class CategoryTest extends TestCase
         $this->assertDatabaseHas(Category::class, ['name' => $name]);
 
         /** @var Category $editedCategory */
-        $editedCategory = Category::where('name', 'like', $name)->first();
+        $editedCategory = Category::query()->where('name', 'like', $name)->first();
 
-        $this->assertEquals($category->id, $editedCategory->id);
-        $this->assertEquals($firstParent->id, $category->parent()->first()->id);
-        $this->assertNotEquals($category->name, $editedCategory->name);
-        $this->assertNotEquals($category->permalink, $editedCategory->permalink);
+        $this->assertEquals($category->getId(), $editedCategory->getId());
+        $this->assertEquals($firstParent->getId(), $category->parent()->first()->getId());
+        $this->assertNotEquals($category->getName(), $editedCategory->getName());
+        $this->assertNotEquals($category->getPermalink(), $editedCategory->getPermalink());
     }
 
     public function test_edit_nested_category_with_diferent_parent(): void
@@ -153,47 +160,47 @@ class CategoryTest extends TestCase
         $slugfy = new Slugify();
 
         $firstParent = new Category(['name' => $this->faker->userName()]);
-        $firstParent->permalink = $slugfy->slugify($firstParent->name);
+        $firstParent->setPermalink($slugfy->slugify($firstParent->getName()));
         $firstParent->save();
 
         $this->assertDatabaseHas(Category::class, $firstParent->toArray());
 
         $secondParent = new Category(['name' => $this->faker->userName()]);
-        $secondParent->permalink = $slugfy->slugify($secondParent->name);
+        $secondParent->setPermalink($slugfy->slugify($secondParent->getName()));
         $secondParent->save();
 
         $this->assertDatabaseHas(Category::class, $secondParent->toArray());
 
         $category = new Category(['name' => $this->faker->userName()]);
-        $category->permalink = $slugfy->slugify($category->name);
+        $category->setPermalink($slugfy->slugify($category->getName()));
         $firstParent->children()->save($category);
 
         $this->assertDatabaseHas(Category::class, $category->toArray());
         $this->assertNotNull($category->parent()->first());
 
         $name = $this->faker->userName();
-        $response = $this->put("/painel/categorias/{$category->id}", ['name' => $name, 'parent' => $secondParent->id]);
+        $response = $this->put("/painel/categorias/{$category->getId()}", ['name' => $name, 'parent' => $secondParent->getId()]);
 
         $response
             ->assertRedirect()
             ->assertSessionHas('message', 'Categoria editada com sucesso');
 
-        $this->assertDatabaseHas(Category::class, ['id' => $category->id]);
+        $this->assertDatabaseHas(Category::class, ['id' => $category->getId()]);
 
         /** @var Category $editedCategory */
-        $editedCategory = Category::where('name', 'like', $name)->first();
+        $editedCategory = Category::query()->where('name', 'like', $name)->first();
 
-        $this->assertEquals($category->id, $editedCategory->id);
-        $this->assertEquals($secondParent->id, $editedCategory->parent()->first()->id);
-        $this->assertNotEquals($category->name, $editedCategory->name);
-        $this->assertNotEquals($category->permalink, $editedCategory->permalink);
+        $this->assertEquals($category->getId(), $editedCategory->getId());
+        $this->assertEquals($secondParent->getId(), $editedCategory->parent()->first()->getId());
+        $this->assertNotEquals($category->getName(), $editedCategory->getName());
+        $this->assertNotEquals($category->getPermalink(), $editedCategory->getPermalink());
     }
 
     public function test_edit_category_without_url_parameter(): void
     {
         $slugfy = new Slugify();
         $category = new Category(['name' => $this->faker->userName()]);
-        $category->permalink = $slugfy->slugify($category->name);
+        $category->setPermalink($slugfy->slugify($category->getName()));
         $category->save();
 
         $this->assertDatabaseHas(Category::class, $category->toArray());
@@ -203,28 +210,28 @@ class CategoryTest extends TestCase
         $response->assertStatus(405);
     }
 
-    public function test_disabling_category(): void
+    public function test_disabling_item(): void
     {
         $slugfy = new Slugify();
         $category = new Category(['name' => $this->faker->userName()]);
-        $category->permalink = $slugfy->slugify($category->name);
+        $category->setPermalink($slugfy->slugify($category->getName()));
         $category->save();
 
         $this->assertDatabaseHas(Category::class, $category->toArray());
 
-        $response = $this->patch("/painel/categorias/{$category->id}/desativar");
+        $response = $this->patch("/painel/categorias/{$category->getId()}/desativar");
         $response->assertOk();
 
         /** @var Category $category */
-        $category = Category::withTrashed()->where('id', '=', $category->id)->first();
+        $category = Category::withTrashed()->where('id', '=', $category->getId())->first();
         $this->assertNotNull($category->deleted_at);
     }
 
-    public function test_enabling_category(): void
+    public function test_enabling_item(): void
     {
         $slugfy = new Slugify();
         $category = new Category(['name' => $this->faker->userName()]);
-        $category->permalink = $slugfy->slugify($category->name);
+        $category->setPermalink($slugfy->slugify($category->getName()));
 
         $category->save();
         $category->delete();
@@ -236,24 +243,24 @@ class CategoryTest extends TestCase
 
         $this->assertDatabaseHas(Category::class, $modelData);
 
-        $response = $this->patch("/painel/categorias/{$category->id}/ativar");
+        $response = $this->patch("/painel/categorias/{$category->getId()}/ativar");
         $response->assertOk();
 
         /** @var Category $category */
-        $category = Category::withTrashed()->where('id', '=', $category->id)->first();
+        $category = Category::withTrashed()->where('id', '=', $category->getId())->first();
         $this->assertNull($category->deleted_at);
     }
 
-    public function test_deleting_category(): void
+    public function test_deletion(): void
     {
         $slugfy = new Slugify();
         $category = new Category(['name' => $this->faker->userName()]);
-        $category->permalink = $slugfy->slugify($category->name);
+        $category->setPermalink($slugfy->slugify($category->getName()));
         $category->save();
 
         $this->assertDatabaseHas(Category::class, $category->toArray());
 
-        $response = $this->delete("/painel/categorias/{$category->id}");
+        $response = $this->delete("/painel/categorias/{$category->getId()}");
 
         $response
             ->assertRedirect()
@@ -271,12 +278,12 @@ class CategoryTest extends TestCase
 
         $slugfy = new Slugify();
         $category = new Category(['name' => $this->faker->userName()]);
-        $category->permalink = $slugfy->slugify($category->name);
+        $category->setPermalink($slugfy->slugify($category->getName()));
         $category->save();
 
         $this->assertDatabaseHas(Category::class, $category->toArray());
 
-        $response = $this->put("/painel/categorias/{$category->id}");
+        $response = $this->put("/painel/categorias/{$category->getId()}");
 
         $response
             ->assertRedirect()
@@ -292,12 +299,12 @@ class CategoryTest extends TestCase
 
         $slugfy = new Slugify();
         $category = new Category(['name' => $this->faker->userName()]);
-        $category->permalink = $slugfy->slugify($category->name);
+        $category->setPermalink($slugfy->slugify($category->getName()));
         $category->save();
 
         $this->assertDatabaseHas(Category::class, $category->toArray());
 
-        $response = $this->put("/painel/categorias/{$category->id}", ['name' => $this->faker->userName(), 'parent' => 'abc']);
+        $response = $this->put("/painel/categorias/{$category->getId()}", ['name' => $this->faker->userName(), 'parent' => 'abc']);
 
         $response
             ->assertRedirect()
@@ -308,15 +315,56 @@ class CategoryTest extends TestCase
     {
         $slugfy = new Slugify();
         $category = new Category(['name' => $this->faker->userName()]);
-        $category->permalink = $slugfy->slugify($category->name);
+        $category->setPermalink($slugfy->slugify($category->getName()));
         $category->save();
 
         $this->assertDatabaseHas(Category::class, $category->toArray());
 
-        $response = $this->put("/painel/categorias/{$category->id}", ['name' => $this->faker->userName(), 'parent' => $category->id]);
+        $response = $this->put("/painel/categorias/{$category->getId()}", ['name' => $this->faker->userName(), 'parent' => $category->getId()]);
 
         $response
             ->assertRedirect()
             ->assertInvalid(['parent']);
+    }
+
+    public function test_search_with_results(): void
+    {
+        $slugfy = new Slugify();
+
+        DB::transaction(function () use ($slugfy) {
+            for ($i = 0; $i < 10; $i++) {
+                $category = new Category(['name' => $this->faker->userName()]);
+                $category->setPermalink($slugfy->slugify($category->getName()))->saveOrFail();
+            }
+        });
+
+        $category = Category::all()->first();
+        $response = $this->get("/painel/categorias/listar?search={$category->getName()}");
+
+        $expected = new Collection();
+
+        $expected->add($category);
+
+        $response
+            ->assertOk()
+            ->assertViewHas('items', $expected);
+    }
+
+    public function test_search_without_results(): void
+    {
+        $slugfy = new Slugify();
+
+        DB::transaction(function () use ($slugfy) {
+            for ($i = 0; $i < 10; $i++) {
+                $category = new Category(['name' => $this->faker->userName()]);
+                $category->setPermalink($slugfy->slugify($category->getName()))->saveOrFail();
+            }
+        });
+
+        $response = $this->get("/painel/categorias/listar?search=invalid");
+
+        $response
+            ->assertOk()
+            ->assertViewHas('items', new Collection());
     }
 }

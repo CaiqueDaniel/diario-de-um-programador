@@ -22,7 +22,7 @@
                     <div class="mb-3">
                         <label for="title" class="form-label">{{__('Title')}}*</label>
                         <input type="text" name="title" class="form-control" id="title"
-                               value="{{$fullbanner->title ?? old('title')}}" required>
+                               value="{{!empty($fullbanner) ? $fullbanner->getTitle() : old('title')}}" required>
 
                         <x-alerts.invalid-field field="title"/>
                     </div>
@@ -30,7 +30,7 @@
                     <div class="mb-3">
                         <label for="link" class="form-label">{{__('Link')}}*</label>
                         <input type="text" name="link" class="form-control" id="link"
-                               value="{{$fullbanner->link ?? old('link')}}" required>
+                               value="{{!empty($fullbanner) ? $fullbanner->getLink() : old('link')}}" required>
 
                         <x-alerts.invalid-field field="link"/>
                     </div>
@@ -39,7 +39,7 @@
                         <label for="article" class="form-label">{{__('Image')}}*</label>
 
                         @if(!empty($fullbanner))
-                            <img src="{{asset('storage/'.$fullbanner->image)}}" alt="Image" class="mb-3"
+                            <img src="{{asset('storage/'.$fullbanner->getImage())}}" alt="Image" class="mb-3"
                                  style="width: 100%"/>
                         @endif
 

@@ -3,12 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Get\SearchRequest;
 use App\Http\Requests\Post\CategoryRequest;
 use App\Models\Category;
-use App\Models\Post;
 use Cocur\Slugify\Slugify;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -16,9 +15,9 @@ class CategoryController extends Controller
 {
     private const FILLABLE_KEYS = ['name'];
 
-    public function index(): View
+    public function index(SearchRequest $request): View
     {
-        $items = Category::withTrashed()->get();
+        $items = Category::findAll($request->get('search'));
 
         return view('pages.admin.category.listing', compact('items'));
     }
@@ -29,13 +28,13 @@ class CategoryController extends Controller
         $category = new Category($request->only(self::FILLABLE_KEYS));
 
         /** @var Category $parentCategory */
-        $parentCategory = Category::find($request->get('parent'));
+        $parentCategory = Category::query()->find($request->get('parent'));
 
         if (empty($parentCategory)) {
-            $category->permalink = $slugfy->slugify($category->name);
+            $category->setPermalink($slugfy->slugify($category->getName()));
             $category->save();
         } else {
-            $category->permalink = "{$parentCategory->permalink}/{$slugfy->slugify($category->name)}";
+            $category->setPermalink("{$parentCategory->getPermalink()}/{$slugfy->slugify($category->getName())}");
             $parentCategory->children()->save($category);
         }
 
@@ -55,7 +54,7 @@ class CategoryController extends Controller
         $category->fill($request->only(self::FILLABLE_KEYS));
 
         /** @var Category $parentCategory */
-        $parentCategory = Category::find($request->get('parent'));
+        $parentCategory = Category::query()->find($request->get('parent'));
 
         if (empty($parentCategory)) {
             $parentCategory = $category->parent()->first();
@@ -63,10 +62,10 @@ class CategoryController extends Controller
             if (!empty($parentCategory))
                 $category->parent()->disassociate();
 
-            $category->permalink = $slugfy->slugify($category->name);
+            $category->setPermalink($slugfy->slugify($category->getName()));
             $category->save();
         } else {
-            $category->permalink = "{$parentCategory->permalink}/{$slugfy->slugify($category->name)}";
+            $category->setPermalink("{$parentCategory->getPermalink()}/{$slugfy->slugify($category->getName())}");
             $parentCategory->children()->save($category);
         }
 

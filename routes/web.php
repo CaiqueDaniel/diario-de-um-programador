@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\{
     CategoryController as AdminCategoryController,
     FullBannerController,
     PostController as AdminPostController,
+    PublishPostController as AdminPublishPostController
 };
 
 use App\Http\Controllers\Web\{
@@ -31,7 +32,7 @@ Auth::routes(['register' => false]);
 Route::get('', [WebHomeController::class, 'index'])->name('web.home');
 Route::get('artigo/{slug}', [WebPostController::class, 'show'])->name('web.post.view');
 Route::get('categoria/{category:permalink}', [WebCategoryController::class, 'show'])
-    ->where('category','.+')
+    ->where('category', '.+')
     ->name('web.category.view');
 
 Route::middleware('auth')->prefix('painel')->group(function () {
@@ -49,6 +50,9 @@ Route::middleware('auth')->prefix('painel')->group(function () {
 
             Route::patch('{post}/desativar', 'trash')->name('admin.post.trash')->withTrashed();
             Route::patch('{post}/ativar', 'restore')->name('admin.post.restore')->withTrashed();
+            Route::patch('{post}/publicar', AdminPublishPostController::class)
+                ->name('admin.post.publish')
+                ->withTrashed();
 
             Route::delete('{post}', 'destroy')->name('admin.post.destroy')->withTrashed();
         });

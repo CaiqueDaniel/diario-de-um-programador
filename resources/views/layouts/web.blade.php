@@ -79,7 +79,7 @@
 
             <div class="bg-light py-4">
                 <div class="container text-center">
-                    <p class="text-muted mb-0 py-2">2023 Diário de um programador</p>
+                    <p class="text-muted mb-0 py-2">2023 {{ config('app.name', 'Laravel') }}</p>
                 </div>
             </div>
         </footer>

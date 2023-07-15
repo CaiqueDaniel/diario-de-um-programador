@@ -2,24 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Builder;
+use Carbon\Carbon;
+use DateTime;
+use Illuminate\Database\Eloquent\{Model, Builder, SoftDeletes};
+use Illuminate\Database\Eloquent\Relations\{BelongsTo, BelongsToMany};
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Throwable;
 
-/**
- * @property int $id
- * @property string $title
- * @property string $subtitle
- * @property string $article
- * @property string $permalink
- * @property string $thumbnail
- * @property string $created_at
- * @property string $updated_at
- */
 class Post extends Model
 {
     use HasFactory, SoftDeletes;
@@ -38,6 +28,109 @@ class Post extends Model
         return $this->belongsToMany(Category::class, 'posts_categories', 'post', 'category');
     }
 
+    /**
+     * @throws Throwable
+     */
+    public function publish(): void
+    {
+        if ($this->isPublished())
+            return;
+
+        $this->setPublishedAt(Carbon::now())->saveOrFail();
+    }
+
+    public function getId(): int
+    {
+        return $this->attributes['id'];
+    }
+
+    public function getTitle(): string
+    {
+        return $this->attributes['title'];
+    }
+
+    public function getSubtitle(): string
+    {
+        return $this->attributes['subtitle'];
+    }
+
+    public function getArticle(): string
+    {
+        return $this->attributes['article'];
+    }
+
+    public function getPermalink(): string
+    {
+        return $this->attributes['permalink'];
+    }
+
+    public function getThumbnail(): string
+    {
+        return $this->attributes['thumbnail'];
+    }
+
+    public function getCreatedAt(): string
+    {
+        return $this->attributes['created_at'];
+    }
+
+    public function getUpdatedAt(): string
+    {
+        return $this->attributes['updated_at'];
+    }
+
+    public function isPublished(): bool
+    {
+        return !empty($this->getPublishedAt());
+    }
+
+    public function getPublishedAt(): ?DateTime
+    {
+        $publishedAt = $this->attributes['published_at'];
+
+        if (empty($publishedAt))
+            return null;
+
+        return new Carbon($this->attributes['published_at']);
+    }
+
+
+    public function setTitle(string $value): self
+    {
+        $this->attributes['title'] = $value;
+        return $this;
+    }
+
+    public function setSubtitle(string $value): self
+    {
+        $this->attributes['subtitle'] = $value;
+        return $this;
+    }
+
+    public function setArticle(string $value): self
+    {
+        $this->attributes['article'] = $value;
+        return $this;
+    }
+
+    public function setPermalink(string $value): self
+    {
+        $this->attributes['permalink'] = $value;
+        return $this;
+    }
+
+    public function setThumbnail(string $value): self
+    {
+        $this->attributes['thumbnail'] = $value;
+        return $this;
+    }
+
+    private function setPublishedAt(DateTime $value): self
+    {
+        $this->attributes['published_at'] = $value->format('Y-m-d H:i:s');
+        return $this;
+    }
+
     public static function findAll(string $search = null): LengthAwarePaginator
     {
         /** @var Builder $builder */
@@ -51,7 +144,7 @@ class Post extends Model
 
     public static function findAllWithoutTrashed(string $search = null): LengthAwarePaginator
     {
-        $builder = static::query();
+        $builder = static::query()->whereNotNull('published_at');
 
         if (!empty($search))
             $builder->where('title', 'like', '%' . $search . '%');

@@ -27,7 +27,7 @@
                 @foreach($items as $item)
                     <ul class="list-group list-group-horizontal-md mb-1">
                         <li class="list-group-item col-md-5">
-                            <b class="d-md-none">{{__('Title')}}: </b>{{$item->title}}
+                            <b class="d-md-none">{{__('Title')}}: </b>{{$item->getTitle()}}
                         </li>
 
                         <li class="list-group-item col-md-3">
@@ -35,7 +35,17 @@
                         </li>
 
                         <li class="list-group-item col-md-2">
-                            <b class="d-md-none">{{__('Published At')}}: </b>@datetime($item->created_at)
+                            @if($item->isPublished())
+                                <b class="d-md-none">{{__('Published At')}}: </b>
+                                @datetime($item->getPublishedAt())
+                            @else
+                                <form action="{{route('admin.post.publish', ['post'=>$item->getId()])}}" method="POST"
+                                      class="d-flex justify-content-center">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button class="btn btn-sm btn-outline-primary">{{__('Publish')}}</button>
+                                </form>
+                            @endif
                         </li>
 
                         <li class="list-group-item col-md-2 d-flex align-items-center justify-content-evenly">
@@ -43,13 +53,13 @@
                                 <input
                                     class="form-check-input"
                                     type="checkbox"
-                                    data-restore="{{route('admin.post.restore', ['post' => $item->id])}}"
-                                    data-trash="{{route('admin.post.trash', ['post' => $item->id])}}"
-                                    role="switch" {{$item->trashed()?'':'checked'}}
+                                    data-restore="{{route('admin.post.restore', ['post' => $item->getId()])}}"
+                                    data-trash="{{route('admin.post.trash', ['post' => $item->getId()])}}"
+                                    role="switch" {{$item->trashed() ? '' : 'checked'}}
                                 />
                             </div>
 
-                            <a class="btn btn-sm btn-outline-warning" href="{{route('admin.post.edit', $item->id)}}">
+                            <a class="btn btn-sm btn-outline-warning" href="{{route('admin.post.edit', $item->getId())}}">
                                 <i class="fa-regular fa-pen-to-square"></i>
                             </a>
 
