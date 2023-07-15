@@ -2,8 +2,8 @@
     <div class="carousel-inner">
         @foreach($fullbanners as $index => $banner)
             <div class="carousel-item {{$index==0 ? 'active' : ''}}">
-                <img src="{{asset("storage/{$banner->image}")}}" class="d-block w-100" loading="lazy"
-                     alt="{{$banner->name}}" style="max-height: 400px; object-fit: cover;">
+                <img src="{{asset("storage/{$banner->getImage()}")}}" class="d-block w-100" loading="lazy"
+                     alt="{{$banner->getTitle()}}" style="max-height: 400px; object-fit: cover;">
             </div>
         @endforeach
     </div>
