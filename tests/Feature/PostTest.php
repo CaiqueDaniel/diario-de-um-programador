@@ -213,12 +213,53 @@ class PostTest extends TestCase implements CRUDTest, SoftDeleteTest
 
     public function test_enabling_item(): void
     {
-        // TODO: Implement test_enabling_item() method.
+        $slugfy = new Slugify();
+        $title = $this->faker->name();
+
+        $post = new Post();
+        $post->setTitle($title)
+            ->setSubtitle($this->faker->text())
+            ->setArticle($this->faker->text())
+            ->setPermalink($slugfy->slugify($title))
+            ->setThumbnail(UploadedFile::fake()->create($this->faker->name() . '.jpg'));
+
+        $this->user->posts()->save($post);
+
+        $post->delete();
+        $post->save();
+
+        $this->assertDatabaseHas(Post::class, ['id' => $post->getId()]);
+
+        $response = $this->patch("/painel/artigos/{$post->getId()}/ativar");
+        $response->assertOk();
+
+        /** @var Post $post */
+        $post = Post::query()->find($post->getId());
+        $this->assertFalse($post->trashed());
     }
 
     public function test_disabling_item(): void
     {
-        // TODO: Implement test_disabling_item() method.
+        $slugfy = new Slugify();
+        $title = $this->faker->name();
+
+        $post = new Post();
+        $post->setTitle($title)
+            ->setSubtitle($this->faker->text())
+            ->setArticle($this->faker->text())
+            ->setPermalink($slugfy->slugify($title))
+            ->setThumbnail(UploadedFile::fake()->create($this->faker->name() . '.jpg'));
+
+        $this->user->posts()->save($post);
+
+        $this->assertDatabaseHas(Post::class, ['id' => $post->getId()]);
+
+        $response = $this->patch("/painel/artigos/{$post->getId()}/desativar");
+        $response->assertOk();
+
+        /** @var Post $post */
+        $post = Post::withTrashed()->find($post->getId());
+        $this->assertTrue($post->trashed());
     }
 
     public function test_update(): void
