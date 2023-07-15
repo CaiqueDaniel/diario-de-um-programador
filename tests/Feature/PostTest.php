@@ -64,8 +64,6 @@ class PostTest extends TestCase implements CRUDTest, SoftDeleteTest
 
     public function test_creation(): void
     {
-        Storage::fake('local');
-
         $title = $this->faker->name();
         $subtitle = $this->faker->text();
         $article = $this->faker->text();
@@ -264,6 +262,39 @@ class PostTest extends TestCase implements CRUDTest, SoftDeleteTest
 
     public function test_update(): void
     {
-        // TODO: Implement test_update() method.
+        $slugfy = new Slugify();
+        $title = $this->faker->name();
+
+        $post = new Post();
+        $post->setTitle($title)
+            ->setSubtitle($this->faker->text())
+            ->setArticle($this->faker->text())
+            ->setPermalink($slugfy->slugify($title))
+            ->setThumbnail(UploadedFile::fake()->create($this->faker->name() . '.jpg'));
+
+        $this->user->posts()->save($post);
+
+        $title = $this->faker->name();
+        $subtitle = $this->faker->text();
+        $article = $this->faker->text();
+
+        $response = $this->put("/painel/artigos/{$post->getId()}", [
+            'title' => $title,
+            'subtitle' => $subtitle,
+            'article' => $article,
+            'thumbnail' => UploadedFile::fake()->create($this->faker->name() . '.jpg')
+        ]);
+
+        $response
+            ->assertRedirect()
+            ->assertSessionHas('message', 'Artigo editado com sucesso');
+
+        $this->assertDatabaseHas(Post::class, ['title' => $title, 'subtitle' => $subtitle, 'article' => $article]);
+
+        /** @var Post $post $post */
+        $post = Post::where('title', 'like', $title)->first();
+
+        $this->assertNotNull($post->getPermalink());
+        $this->assertNotNull($post->getThumbnail());
     }
 }
