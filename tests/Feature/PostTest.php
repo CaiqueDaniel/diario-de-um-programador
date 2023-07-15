@@ -6,9 +6,12 @@ use App\Models\Category;
 use App\Models\Post;
 use App\Models\User;
 use Cocur\Slugify\Slugify;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Tests\Feature\Interfaces\CRUDTest;
@@ -151,12 +154,61 @@ class PostTest extends TestCase implements CRUDTest, SoftDeleteTest
 
     public function test_search_with_results(): void
     {
-        // TODO: Implement test_search_with_results() method.
+        $slugfy = new Slugify();
+
+        DB::transaction(function () use ($slugfy) {
+            for ($i = 0; $i < 10; $i++) {
+                $title = $this->faker->name();
+
+                $post = new Post();
+                $post->setTitle($title)
+                    ->setSubtitle($this->faker->text())
+                    ->setArticle($this->faker->text())
+                    ->setPermalink($slugfy->slugify($title))
+                    ->setThumbnail(UploadedFile::fake()->create($this->faker->name() . '.jpg'));
+
+                $this->user->posts()->save($post);
+            }
+        });
+
+        /** @var Post $post */
+        $post = Post::all()->first();
+        $response = $this->get("/painel/artigos/listar?search={$post->getTitle()}");
+
+        $response
+            ->assertOk()
+            ->assertViewHas('response', function (LengthAwarePaginator $data) use ($post) {
+                /** @var Post[] $items */
+                $items = $data->items();
+
+                return $items[0]->getId() == $post->getId();
+            });
     }
 
     public function test_search_without_results(): void
     {
-        // TODO: Implement test_search_without_results() method.
+        $slugfy = new Slugify();
+
+        DB::transaction(function () use ($slugfy) {
+            for ($i = 0; $i < 10; $i++) {
+                $title = $this->faker->name();
+
+                $post = new Post();
+                $post->setTitle($title)
+                    ->setSubtitle($this->faker->text())
+                    ->setArticle($this->faker->text())
+                    ->setPermalink($slugfy->slugify($title))
+                    ->setThumbnail(UploadedFile::fake()->create($this->faker->name() . '.jpg'));
+
+                $this->user->posts()->save($post);
+            }
+        });
+
+        $response = $this->get("/painel/artigos/listar?search=invalid");
+
+        $response
+            ->assertOk()
+            ->assertViewHas('response', fn(LengthAwarePaginator $data) => empty($data->items()));
     }
 
     public function test_enabling_item(): void
