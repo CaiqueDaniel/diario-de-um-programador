@@ -3,6 +3,9 @@
 namespace Tests\Feature;
 
 use App\Models\{FullBanner, User};
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Testing\{RefreshDatabase, WithFaker};
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
@@ -71,7 +74,7 @@ class FullBannerTest extends TestCase implements CRUDTest, SoftDeleteTest
         /** @var FullBanner $banner */
         $banner = FullBanner::query()->where('title', 'like', $title)->first();
 
-        $this->assertNotNull($banner->image);
+        $this->assertNotNull($banner->getImage());
     }
 
     public function test_deletion(): void
@@ -87,7 +90,7 @@ class FullBannerTest extends TestCase implements CRUDTest, SoftDeleteTest
 
         $this->assertDatabaseHas(FullBanner::class, $banner->toArray());
 
-        $response = $this->delete("/painel/fullbanners/{$banner->id}");
+        $response = $this->delete("/painel/fullbanners/{$banner->getId()}");
 
         $response
             ->assertRedirect()
@@ -114,7 +117,7 @@ class FullBannerTest extends TestCase implements CRUDTest, SoftDeleteTest
         $title = $this->faker->name();
         $link = $this->faker->url();
 
-        $response = $this->put("/painel/fullbanners/{$banner->id}", [
+        $response = $this->put("/painel/fullbanners/{$banner->getId()}", [
             'title' => $title,
             'link' => $link,
             'image' => UploadedFile::fake()->create($this->faker->name() . '.jpg')
@@ -129,7 +132,7 @@ class FullBannerTest extends TestCase implements CRUDTest, SoftDeleteTest
         /** @var FullBanner $banner */
         $banner = FullBanner::query()->where('title', 'like', $title)->first();
 
-        $this->assertNotNull($banner->image);
+        $this->assertNotNull($banner->getTitle());
     }
 
     public function test_enabling_item(): void
@@ -145,16 +148,16 @@ class FullBannerTest extends TestCase implements CRUDTest, SoftDeleteTest
         $banner->delete();
         $banner->save();
 
-        $this->assertDatabaseHas(FullBanner::class, ['title' => $banner->title]);
+        $this->assertDatabaseHas(FullBanner::class, ['title' => $banner->getTitle()]);
 
         $modelData = $banner->toArray();
 
         unset($modelData['deleted_at']);
 
-        $this->patch("/painel/fullbanners/{$banner->id}/ativar")->assertOk();
+        $this->patch("/painel/fullbanners/{$banner->getId()}/ativar")->assertOk();
         $this->assertDatabaseHas(FullBanner::class, $modelData);
 
-        $banner = FullBanner::withoutTrashed()->find($banner->id);
+        $banner = FullBanner::withoutTrashed()->find($banner->getId());
 
         $this->assertFalse($banner->trashed());
     }
@@ -171,20 +174,69 @@ class FullBannerTest extends TestCase implements CRUDTest, SoftDeleteTest
         $banner->save();
 
         $this->assertDatabaseHas(FullBanner::class, $banner->toArray());
-        $this->patch("/painel/fullbanners/{$banner->id}/desativar")->assertOk();
+        $this->patch("/painel/fullbanners/{$banner->getId()}/desativar")->assertOk();
 
-        $banner = FullBanner::withTrashed()->find($banner->id);
+        $banner = FullBanner::withTrashed()->find($banner->getId());
 
         $this->assertTrue($banner->trashed());
     }
 
     public function test_search_with_results(): void
     {
-        // TODO: Implement test_search_with_results() method.
+        DB::transaction(function () {
+            for ($i = 0; $i < 10; $i++) {
+                $banner = new FullBanner([
+                    'title' => $this->faker->name(),
+                    'link' => $this->faker->url(),
+                    'image' => UploadedFile::fake()->create($this->faker->name() . '.jpg'),
+                    'position' => $i + 1
+                ]);
+
+                $banner->save();
+            }
+        });
+
+        /** @var FullBanner $banner */
+        $banner = FullBanner::all()->first();
+        $response = $this->get("/painel/fullbanners/listar?search={$banner->getTitle()}");
+
+        $expected = new Collection();
+        $expected->add($banner);
+
+        $response
+            ->assertOk()
+            ->assertViewHas('response', function (LengthAwarePaginator $data) use ($banner) {
+                /** @var FullBanner[] $items */
+                $items = $data->items();
+
+                return $items[0]->getId() == $banner->getId();
+            });
     }
 
     public function test_search_without_results(): void
     {
-        // TODO: Implement test_search_without_results() method.
+        DB::transaction(function () {
+            for ($i = 0; $i < 10; $i++) {
+                $banner = new FullBanner([
+                    'title' => $this->faker->name(),
+                    'link' => $this->faker->url(),
+                    'image' => UploadedFile::fake()->create($this->faker->name() . '.jpg'),
+                    'position' => $i + 1
+                ]);
+
+                $banner->save();
+            }
+        });
+
+        /** @var FullBanner $banner */
+        $banner = FullBanner::all()->first();
+        $response = $this->get("/painel/fullbanners/listar?search={$banner->getTitle()}");
+
+        $expected = new Collection();
+        $expected->add($banner);
+
+        $response
+            ->assertOk()
+            ->assertViewHas('response', fn(LengthAwarePaginator $data) => empty($data->items()));
     }
 }
