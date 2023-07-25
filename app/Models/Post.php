@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use DateTime;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\{Model, Builder, SoftDeletes};
 use Illuminate\Database\Eloquent\Relations\{BelongsTo, BelongsToMany};
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -69,16 +70,6 @@ class Post extends Model
         return $this->attributes['thumbnail'];
     }
 
-    public function getCreatedAt(): string
-    {
-        return $this->attributes['created_at'];
-    }
-
-    public function getUpdatedAt(): string
-    {
-        return $this->attributes['updated_at'];
-    }
-
     public function isPublished(): bool
     {
         return !empty($this->getPublishedAt());
@@ -91,9 +82,16 @@ class Post extends Model
         if (empty($publishedAt))
             return null;
 
-        return new Carbon($this->attributes['published_at']);
+        return new Carbon($publishedAt);
     }
 
+    public function getCategories(): Collection
+    {
+        if (empty($this->categories))
+            $this->categories = $this->categories()->get();
+
+        return $this->categories;
+    }
 
     public function setTitle(string $value): self
     {

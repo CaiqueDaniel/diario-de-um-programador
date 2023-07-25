@@ -11,6 +11,7 @@ class PostController extends Controller
     public function show(string $slug): View
     {
         $post = Post::with('author')
+            ->with('categories')
             ->where('permalink', 'like', $slug)
             ->whereNotNull('published_at')
             ->first();
