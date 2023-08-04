@@ -6,27 +6,5 @@
             max-height: inherit;
             object-fit: cover;
         }
-
-        .hud-cover {
-            background: rgba(0, 0, 0, 0.7);
-
-            h1, h3 {
-                text-align: center;
-            }
-
-            h1 {
-                font-size: 55px;
-
-                @media(max-width: 767px) {
-                    font-size: 30px;
-                }
-            }
-
-            h3 {
-                @media(max-width: 767px) {
-                    font-size: 16px;
-                }
-            }
-        }
     }
 }
