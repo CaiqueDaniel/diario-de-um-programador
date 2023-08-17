@@ -20,7 +20,7 @@
                         d-flex flex-column justify-content-center align-items-center
                         px-2
                     ">
-                        <h3 class="text-white">{{$banner->getTitle()}}</h3>
+                        <h3 class="text-white" style="font-size: 30px;">{{$banner->getTitle()}}</h3>
                     </div>
                 </a>
             </div>
