@@ -152,6 +152,10 @@ class Post extends Model
 
     public static function findAllWithoutTrashedByCategory(Category $category): LengthAwarePaginator
     {
-        return $category->posts()->orderBy('id', 'desc')->paginate(self::LIMIT);
+        return $category
+            ->posts()
+            ->whereNotNull('published_at')
+            ->orderBy('id', 'desc')
+            ->paginate(self::LIMIT);
     }
 }
