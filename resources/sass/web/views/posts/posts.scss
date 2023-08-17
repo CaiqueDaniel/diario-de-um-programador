@@ -1,9 +1,9 @@
 #posts {
     #article-cover {
-        max-height: 400px;
+        height: 400px;
 
         img {
-            max-height: inherit;
+            height: inherit;
             object-fit: cover;
         }
     }
