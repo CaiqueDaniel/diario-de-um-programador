@@ -41,11 +41,14 @@ jobs:
     - name: Run test suite
       run: composer run-script test
 
-    - name: Push files to Server
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+    - name: Executing remote ssh commands using password
+      uses: appleboy/ssh-action@master
       with:
-        server: ${{ secrets.ftp_server }}
-        username: ${{ secrets.ftp_username }}
-        password: ${{ secrets.ftp_password }}
-
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_KEY }}
+        script: |
+                    bash `
+                      git clone git@github.com:CaiqueDaniel/diario-de-um-programador.git
+                      composer install`
    
