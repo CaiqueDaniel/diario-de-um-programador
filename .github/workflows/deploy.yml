@@ -49,5 +49,5 @@ jobs:
         key: ${{secrets.SSH_PRIVATE_KEY }}
         port: ${{ secrets.REMOTE_PORT }}
         script: |
-          git pull
+          git rebase
           composer install
