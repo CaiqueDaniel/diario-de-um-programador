@@ -48,7 +48,6 @@ jobs:
         username: ${{ secrets.SSH_USER }}
         password: ${{ secrets.SSH_PASS }}
         script: |
-                    bash `
-                      git clone git@github.com:CaiqueDaniel/diario-de-um-programador.git
-                      composer install`
+          git clone git@github.com:CaiqueDaniel/diario-de-um-programador.git
+          composer install
    
