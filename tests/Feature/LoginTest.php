@@ -105,4 +105,19 @@ class LoginTest extends TestCase
 
         $this->assertFalse($this->isAuthenticated());
     }
+
+    public function test_redirect_to_painel_when_user_access_login_route_and_session_is_valid(): void
+    {
+        $response = $this->post(route('login'), [
+            'email' => $this->user->email,
+            'password' => '123456'
+        ]);
+
+        $response->assertRedirect();
+
+        $this->assertAuthenticatedAs($this->user);
+
+        $response = $this->get(route('login'));
+        $response->assertRedirect(route('admin.home'));
+    }
 }
