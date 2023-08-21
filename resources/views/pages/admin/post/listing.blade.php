@@ -43,12 +43,13 @@
                                       class="d-flex justify-content-center">
                                     @csrf
                                     @method('PATCH')
+
                                     <button class="btn btn-sm btn-outline-primary">{{__('Publish')}}</button>
                                 </form>
                             @endif
                         </li>
 
-                        <li class="list-group-item col-md-2 d-flex align-items-center justify-content-evenly">
+                        <li class="list-group-item col-md-2 d-flex align-items-center justify-content-evenly item-actions">
                             <div class="form-check form-switch">
                                 <input
                                     class="form-check-input"
@@ -59,7 +60,15 @@
                                 />
                             </div>
 
-                            <a class="btn btn-sm btn-outline-warning" href="{{route('admin.post.edit', $item->getId())}}">
+                            @if($item->isPublished())
+                                <a class="btn btn-sm btn-outline-primary btn-go-to-item"
+                                   href="{{route('web.post.view', ['slug'=>$item->getPermalink()])}}">
+                                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                </a>
+                            @endif
+
+                            <a class="btn btn-sm btn-outline-warning"
+                               href="{{route('admin.post.edit', $item->getId())}}">
                                 <i class="fa-regular fa-pen-to-square"></i>
                             </a>
 

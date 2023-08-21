@@ -6,7 +6,7 @@ export default class SoftDeleteRestore implements Runnable {
             const {dataset, checked} = element as HTMLInputElement;
             let isChecked = checked;
 
-            (element as HTMLInputElement).addEventListener('click', (evt) => {
+            (element as HTMLInputElement).addEventListener('click', () => {
                 const url = isChecked ? dataset.trash : dataset.restore;
                 isChecked = !isChecked;
 
