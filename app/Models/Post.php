@@ -77,7 +77,7 @@ class Post extends Model
 
     public function getPublishedAt(): ?DateTime
     {
-        $publishedAt = $this->attributes['published_at'];
+        $publishedAt = $this->attributes['published_at'] ?? null;
 
         if (empty($publishedAt))
             return null;

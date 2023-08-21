@@ -312,7 +312,6 @@ class PostTest extends TestCase implements CRUDTest, SoftDeleteTest
         $this->user->posts()->save($post);
 
         $post->publish();
-        $post->save();
 
         $this->assertDatabaseHas(Post::class, ['id' => $post->getId()]);
 
@@ -320,5 +319,64 @@ class PostTest extends TestCase implements CRUDTest, SoftDeleteTest
 
         $response->assertOk();
         $response->assertViewIs('pages.web.post.post');
+    }
+
+    public function test_view_disabled_and_published_post(): void
+    {
+        $title = $this->faker->title();
+
+        $post = new Post();
+        $post->setTitle($title)
+            ->setSubtitle($this->faker->text())
+            ->setArticle($this->faker->text())
+            ->setPermalink($title)
+            ->setThumbnail(UploadedFile::fake()->create($this->faker->name() . '.jpg'));
+
+        $this->user->posts()->save($post);
+
+        $post->publish();
+        $post->delete();
+
+        $this->assertDatabaseHas(Post::class, ['id' => $post->getId()]);
+
+        $response = $this->get(route('web.post.view', ['slug' => $post->getPermalink()]));
+
+        $response->assertNotFound();
+    }
+
+    public function test_view_unpublished_post(): void
+    {
+        $title = $this->faker->title();
+
+        $post = new Post();
+        $post->setTitle($title)
+            ->setSubtitle($this->faker->text())
+            ->setArticle($this->faker->text())
+            ->setPermalink($title)
+            ->setThumbnail(UploadedFile::fake()->create($this->faker->name() . '.jpg'));
+
+        $this->user->posts()->save($post);
+
+        $this->assertDatabaseHas(Post::class, ['id' => $post->getId()]);
+
+        $response = $this->get(route('web.post.view', ['slug' => $post->getPermalink()]));
+
+        $response->assertNotFound();
+    }
+
+    public function test_view_unexistent_post(): void
+    {
+        $title = $this->faker->title();
+
+        $post = new Post();
+        $post->setTitle($title)
+            ->setSubtitle($this->faker->text())
+            ->setArticle($this->faker->text())
+            ->setPermalink($title)
+            ->setThumbnail(UploadedFile::fake()->create($this->faker->name() . '.jpg'));
+
+        $response = $this->get(route('web.post.view', ['slug' => $post->getPermalink()]));
+
+        $response->assertNotFound();
     }
 }

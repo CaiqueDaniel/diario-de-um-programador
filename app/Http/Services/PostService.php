@@ -2,6 +2,7 @@
 
 namespace App\Http\Services;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Models\{Post, User};
 use Cocur\Slugify\Slugify;
 use Illuminate\Http\Request;
@@ -55,6 +56,24 @@ class PostService
         $post->forceDelete();
 
         $this->fileUploadService->delete($post->getThumbnail());
+    }
+
+    /**
+     * @throw ModelNotFoundException
+     */
+    public function getByPermalink(string $permalink): Post
+    {
+        /** @var Post $post */
+        $post = Post::with('author')
+            ->with('categories')
+            ->where('permalink', 'like', $permalink)
+            ->whereNotNull('published_at')
+            ->first();
+
+        if (empty($post))
+            throw new ModelNotFoundException();
+
+        return $post;
     }
 
     private function definePermalink(Post $post): void
