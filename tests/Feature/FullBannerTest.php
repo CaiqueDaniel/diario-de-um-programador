@@ -9,10 +9,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Testing\{RefreshDatabase, WithFaker};
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
-use Tests\Feature\Interfaces\{CRUDTest, SoftDeleteTest};
 use Tests\TestCase;
 
-class FullBannerTest extends TestCase implements CRUDTest, SoftDeleteTest
+class FullBannerTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
 

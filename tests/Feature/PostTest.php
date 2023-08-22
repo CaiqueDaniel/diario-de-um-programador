@@ -6,7 +6,6 @@ use App\Models\Category;
 use App\Models\Post;
 use App\Models\User;
 use Cocur\Slugify\Slugify;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
@@ -14,11 +13,9 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Tests\Feature\Interfaces\CRUDTest;
-use Tests\Feature\Interfaces\SoftDeleteTest;
 use Tests\TestCase;
 
-class PostTest extends TestCase implements CRUDTest, SoftDeleteTest
+class PostTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
 
