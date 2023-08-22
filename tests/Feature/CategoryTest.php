@@ -10,14 +10,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Tests\Feature\Interfaces\CRUDTest;
-use Tests\Feature\Interfaces\DeleteTest;
-use Tests\Feature\Interfaces\ListTest;
-use Tests\Feature\Interfaces\LoadFormTest;
-use Tests\Feature\Interfaces\SoftDeleteTest;
 use Tests\TestCase;
 
-class CategoryTest extends TestCase implements LoadFormTest, ListTest, DeleteTest, SoftDeleteTest
+class CategoryTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
 
