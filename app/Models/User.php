@@ -7,13 +7,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
 
-/**
- * @property string $name
- * @property string $email
- */
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRolesAndAbilities;
@@ -25,8 +22,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'email',
-        'password',
+        'email'
     ];
 
     /**
@@ -51,5 +47,36 @@ class User extends Authenticatable
     public function posts(): HasMany
     {
         return $this->hasMany(Post::class, 'author');
+    }
+
+    public function setName(string $value): self
+    {
+        $this->attributes['name'] = $value;
+
+        return $this;
+    }
+
+    public function setEmail(string $value): self
+    {
+        $this->attributes['email'] = $value;
+
+        return $this;
+    }
+
+    public function setPassword(string $value): self
+    {
+        $this->attributes['password'] = Hash::make($value);
+
+        return $this;
+    }
+
+    public function getName(): string
+    {
+        return $this->attributes['name'];
+    }
+
+    public function getEmail(): string
+    {
+        return $this->attributes['email'];
     }
 }
