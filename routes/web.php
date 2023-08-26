@@ -5,7 +5,9 @@ use App\Http\Controllers\Admin\{
     CategoryController as AdminCategoryController,
     FullBannerController,
     PostController as AdminPostController,
-    PublishPostController as AdminPublishPostController
+    PublishPostController as AdminPublishPostController,
+    AdminController,
+    UserController as AdminUserController
 };
 
 use App\Http\Controllers\Web\{
@@ -37,6 +39,22 @@ Route::get('categoria/{category:permalink}', [WebCategoryController::class, 'sho
 
 Route::middleware('auth')->prefix('painel')->group(function () {
     Route::get('', [AdminHomeController::class, 'index'])->name('admin.home');
+
+    Route::prefix('usuarios')->group(function () {
+        Route::view('criar', 'pages.admin.user.form')->name('admin.user.create');
+
+        Route::controller(AdminUserController::class)->group(function () {
+            Route::get('listar', 'index')->name('admin.user.index');
+        });
+
+        Route::controller(AdminController::class)->group(function () {
+            Route::get('editar/{user}', 'edit')->name('admin.user.edit');
+
+            Route::post('', 'store')->name('admin.user.store');
+            Route::put('{user}', 'update')->name('admin.user.update');
+            Route::delete('{user}', 'destroy')->name('admin.user.destroy');
+        });
+    });
 
     Route::prefix('artigos')->group(function () {
         Route::view('criar', 'pages.admin.post.form')->name('admin.post.create');

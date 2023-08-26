@@ -37,6 +37,7 @@
                 <!-- Left Side Of Navbar -->
                 <ul class="navbar-nav me-auto">
                     @auth
+                        <x-nav-item href="{{ route('admin.user.index') }}">{{ __('Users') }}</x-nav-item>
                         <x-nav-item href="{{ route('admin.post.index') }}">{{ __('Posts') }}</x-nav-item>
                         <x-nav-item href="{{ route('admin.category.index') }}">{{ __('Categories') }}</x-nav-item>
                         <x-nav-item href="{{ route('admin.fullbanner.index') }}">{{ __('Fullbanners') }}</x-nav-item>
