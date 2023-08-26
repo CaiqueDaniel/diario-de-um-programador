@@ -31,7 +31,17 @@ class UserTest extends TestCase
 
     public function test_load_form_edit_admin_user(): void
     {
-        $response = $this->get(route('admin.user.edit'));
+        $userData = [
+            'name' => $this->faker->name(),
+            'email' => $this->faker->email(),
+        ];
+
+        $user = new User($userData);
+        $user->setPassword($this->faker->password())->save();
+
+        $this->assertDatabaseHas(User::class, $userData);
+
+        $response = $this->get(route('admin.user.edit', ['user' => $user->getId()]));
         $response
             ->assertOk()
             ->assertViewIs('pages.admin.user.form');
