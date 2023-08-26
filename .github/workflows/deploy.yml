@@ -48,3 +48,5 @@ jobs:
         script: |
           git pull
           composer install --no-dev
+          php artisan route:clear
+          php artisan route:cache
