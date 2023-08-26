@@ -21,6 +21,13 @@ class UserTest extends TestCase
         $this->setupUserWithSessionByTest($this);
     }
 
+    public function test_load_user_listing_page():void{
+        $response = $this->get(route('admin.user.index'));
+        $response
+            ->assertOk()
+            ->assertViewIs('pages.admin.user.listing');
+    }
+
     public function test_load_form_create_admin_user(): void
     {
         $response = $this->get(route('admin.user.create'));
