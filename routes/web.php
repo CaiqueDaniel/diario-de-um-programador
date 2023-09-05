@@ -1,7 +1,7 @@
 <?php
 
 use App\Enums\Abilities;
-use App\Http\Controllers\Admin\{
+use App\Http\Controllers\Admin\{AccountController,
     HomeController as AdminHomeController,
     CategoryController as AdminCategoryController,
     FullBannerController,
@@ -40,6 +40,8 @@ Route::get('categoria/{category:permalink}', [WebCategoryController::class, 'sho
 
 Route::middleware('auth')->prefix('painel')->group(function () {
     Route::get('', [AdminHomeController::class, 'index'])->name('admin.home');
+    Route::get('conta', [AccountController::class, 'edit'])->name('admin.account.edit');
+    Route::put('conta/{user}', [AccountController::class, 'update'])->name('admin.account.update');
 
     Route::middleware('can:*')->group(function () {
         Route::prefix('usuarios')->group(function () {
