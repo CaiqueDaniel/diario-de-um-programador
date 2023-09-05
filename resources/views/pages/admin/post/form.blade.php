@@ -71,8 +71,7 @@
                         <x-alerts.invalid-field field="categories.*"/>
                     </div>
 
-                    <a href="{{url()->previous()}}" class="btn btn-secondary">{{__('Go Back')}}</a>
-                    <button type="submit" class="btn btn-primary">{{__('Submit')}}</button>
+                    <x-form-action-buttons/>
                 </form>
             </div>
         </div>
