@@ -63,8 +63,12 @@
                     <!-- Authentication Links -->
                     @auth
                         <li class="nav-item dropdown">
-                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
+                            <a id="navbarDropdown" class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button"
                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                <div class="rounded-circle me-2 d-flex justify-content-center align-items-center profile-dropdown">
+                                    @firstchar(Auth::user()->name)
+                                </div>
+
                                 {{ Auth::user()->name }}
                             </a>
 

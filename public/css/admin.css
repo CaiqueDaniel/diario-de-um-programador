@@ -1,3 +1,15 @@
-.listing{height:70vh;overflow-y:auto}.listing .header{font-weight:700}
+.listing {
+  height: 70vh;
+  overflow-y: auto;
+}
+.listing .header {
+  font-weight: bold;
+}
 
-/*# sourceMappingURL=admin.css.map*/
+.profile-dropdown {
+  width: 32px;
+  height: 32px;
+  background: #154ea4;
+  color: white;
+  text-transform: uppercase;
+}
