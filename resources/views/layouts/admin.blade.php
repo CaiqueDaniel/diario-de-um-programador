@@ -20,6 +20,7 @@
     <link href="{{ asset('css/admin.css') }}" rel="stylesheet">
     <link href="{{ asset('css/common.css') }}" rel="stylesheet">
 </head>
+
 <body>
 <div id="app">
     <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
@@ -37,10 +38,23 @@
                 <!-- Left Side Of Navbar -->
                 <ul class="navbar-nav me-auto">
                     @auth
-                        <x-nav-item href="{{ route('admin.user.index') }}">{{ __('Users') }}</x-nav-item>
-                        <x-nav-item href="{{ route('admin.post.index') }}">{{ __('Posts') }}</x-nav-item>
-                        <x-nav-item href="{{ route('admin.category.index') }}">{{ __('Categories') }}</x-nav-item>
-                        <x-nav-item href="{{ route('admin.fullbanner.index') }}">{{ __('Fullbanners') }}</x-nav-item>
+                        @can('*')
+                            <x-nav-item href="{{ route('admin.user.index') }}">{{ __('Users') }}</x-nav-item>
+                        @endcan
+
+                        @can(App\Enums\Abilities::LIST_POSTS->name)
+                            <x-nav-item href="{{ route('admin.post.index') }}">{{ __('Posts') }}</x-nav-item>
+                        @endcan
+
+                        @can(App\Enums\Abilities::LIST_CATEGORIES->name)
+                            <x-nav-item href="{{ route('admin.category.index') }}">{{ __('Categories') }}</x-nav-item>
+                        @endcan
+
+                        @can(App\Enums\Abilities::LIST_BANNERS->name)
+                            <x-nav-item href="{{ route('admin.fullbanner.index') }}">
+                                {{ __('Fullbanners') }}
+                            </x-nav-item>
+                        @endcan
                     @endauth
                 </ul>
 
@@ -78,7 +92,7 @@
 
     <main class="py-4">
         @yield('content')
-        </main>
-    </div>
+    </main>
+</div>
 </body>
 </html>
