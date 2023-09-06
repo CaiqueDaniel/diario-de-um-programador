@@ -17,7 +17,7 @@ class AdminService
         $user = new User($request->validated());
 
         DB::transaction(function () use ($user) {
-            $password = Str::password();
+            $password = Str::random();
 
             $user->setPassword($password);
             $user->saveOrFail();
