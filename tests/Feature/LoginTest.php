@@ -18,14 +18,12 @@ class LoginTest extends TestCase
     {
         parent::setUp();
 
-        $this->migrateFreshUsing();
-
         $this->user = new User([
             'name' => $this->faker->name(),
-            'email' => $this->faker->email(),
-            'password' => Hash::make('123456'),
+            'email' => $this->faker->email()
         ]);
 
+        $this->user->setPassword('123456');
         $this->user->save();
     }
 

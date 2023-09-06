@@ -9,30 +9,18 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Testing\{RefreshDatabase, WithFaker};
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
+use Tests\Feature\Fixture\WithLoggedSuperAdmin;
 use Tests\TestCase;
 
 class FullBannerTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use RefreshDatabase, WithFaker, WithLoggedSuperAdmin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->migrateFreshUsing();
-
-        $user = new User([
-            'name' => $this->faker->name(),
-            'email' => $this->faker->email(),
-            'password' => Hash::make('123456'),
-        ]);
-
-        $user->save();
-
-        $this->post('/login', [
-            'email' => $user->email,
-            'password' => '123456'
-        ]);
+        $this->setupUserWithSessionByTest($this);
     }
 
     public function test_listing(): void

@@ -3,39 +3,23 @@
 namespace Tests\Feature;
 
 use App\Models\Category;
-use App\Models\User;
 use Cocur\Slugify\Slugify;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
+use Tests\Feature\Fixture\WithLoggedSuperAdmin;
 use Tests\TestCase;
 
 class CategoryTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
-
-    private User $user;
+    use RefreshDatabase, WithFaker, WithLoggedSuperAdmin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->migrateFreshUsing();
-
-        $this->user = new User([
-            'name' => $this->faker->name(),
-            'email' => $this->faker->email(),
-            'password' => Hash::make('123456'),
-        ]);
-
-        $this->user->save();
-
-        $this->post('/login', [
-            'email' => $this->user->email,
-            'password' => '123456'
-        ]);
+        $this->setupUserWithSessionByTest($this);
     }
 
     public function test_listing(): void

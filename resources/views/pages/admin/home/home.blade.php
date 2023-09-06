@@ -1,6 +1,6 @@
 @php
     /**
-    * @var \App\Models\User $loggedUser
+    * @var App\Models\User $loggedUser
     */
     $loggedUser = auth()->user();
 @endphp
@@ -19,25 +19,31 @@
                             </div>
                         @endif
 
-                        {{ __('Welcome back') }}, {{$loggedUser->name}}
+                        {{ __('Welcome back') }}, {{$loggedUser->getName()}}
                     </div>
                 </div>
 
                 <div class="row mt-4">
-                    <x-shortcut href="{{route('admin.post.create')}}">
-                        <i class="fa-regular fa-newspaper" style="font-size: 50px;"></i>
-                        {{__('Create new article')}}
-                    </x-shortcut>
+                    @can(App\Enums\Abilities::CREATE_POSTS->name)
+                        <x-shortcut href="{{route('admin.post.create')}}">
+                            <i class="fa-regular fa-newspaper" style="font-size: 50px;"></i>
+                            {{__('Create new article')}}
+                        </x-shortcut>
+                    @endcan
 
-                    <x-shortcut href="{{route('admin.category.create')}}">
-                        <i class="fa-regular fa-object-group" style="font-size: 50px;"></i>
-                        {{__('Create new category')}}
-                    </x-shortcut>
+                    @can(App\Enums\Abilities::CREATE_CATEGORIES->name)
+                        <x-shortcut href="{{route('admin.category.create')}}">
+                            <i class="fa-regular fa-object-group" style="font-size: 50px;"></i>
+                            {{__('Create new category')}}
+                        </x-shortcut>
+                    @endcan
 
-                    <x-shortcut href="{{route('admin.fullbanner.create')}}">
-                        <i class="fa-regular fa-image" style="font-size: 50px;"></i>
-                        {{__('Create new fullbanner')}}
-                    </x-shortcut>
+                    @can(App\Enums\Abilities::CREATE_BANNERS->name)
+                        <x-shortcut href="{{route('admin.fullbanner.create')}}">
+                            <i class="fa-regular fa-image" style="font-size: 50px;"></i>
+                            {{__('Create new fullbanner')}}
+                        </x-shortcut>
+                    @endcan
                 </div>
             </div>
         </div>

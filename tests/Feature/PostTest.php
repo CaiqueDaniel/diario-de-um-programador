@@ -11,34 +11,19 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Tests\Feature\Fixture\WithLoggedSuperAdmin;
 use Tests\TestCase;
 
 class PostTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
-
-    private User $user;
+    use RefreshDatabase, WithFaker, WithLoggedSuperAdmin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->migrateFreshUsing();
-
-        $this->user = new User([
-            'name' => $this->faker->name(),
-            'email' => $this->faker->email(),
-            'password' => Hash::make('123456'),
-        ]);
-
-        $this->user->save();
-
-        $this->post('/login', [
-            'email' => $this->user->email,
-            'password' => '123456'
-        ]);
+        $this->setupUserWithSessionByTest($this);
     }
 
     public function test_listing(): void

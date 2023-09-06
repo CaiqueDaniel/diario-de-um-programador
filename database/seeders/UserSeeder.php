@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Enums\Roles;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Silber\Bouncer\Bouncer;
 
 class UserSeeder extends Seeder
 {
@@ -15,10 +17,15 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        User::query()->create([
+        $bouncer = Bouncer::create();
+        $user = new User([
             'name' => 'Teste',
             'email' => 'teste@gmail.com',
-            'password' => Hash::make('123456')
         ]);
+
+        $user->setPassword('123456');
+        $user->saveOrFail();
+
+        $bouncer->assign(Roles::SUPER_ADMIN->name)->to($user);
     }
 }
