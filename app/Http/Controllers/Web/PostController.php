@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
-use App\Http\Services\PostService;
+use App\Services\PostService;
 use Illuminate\View\View;
 
 class PostController extends Controller

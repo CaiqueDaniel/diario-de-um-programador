@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Services;
+namespace App\Services;
 
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Models\{Post, User};
 use Cocur\Slugify\Slugify;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 

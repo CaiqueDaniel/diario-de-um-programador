@@ -5,12 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Get\SearchRequest;
 use App\Http\Requests\Post\PostRequest;
-use App\Http\Services\PostService;
-use App\Models\User;
-use Illuminate\Http\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response;
-use Illuminate\View\View;
 use App\Models\Post;
+use App\Models\User;
+use App\Services\PostService;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\Response;
 
 class PostController extends Controller
 {

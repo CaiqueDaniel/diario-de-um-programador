@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Actions\Users\CreateAdminAction;
+use App\Actions\Users\DeleteUserAction;
+use App\Actions\Users\UpdateUserAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Post\AdminRequest;
-use App\Http\Services\AdminService;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
@@ -14,16 +16,9 @@ use Throwable;
 
 class AdminController extends Controller
 {
-    public function __construct(private readonly AdminService $adminService)
+    public function store(AdminRequest $request, CreateAdminAction $createAdmin): RedirectResponse
     {
-    }
-
-    /**
-     * @throws Throwable
-     */
-    public function store(AdminRequest $request): RedirectResponse
-    {
-        $this->adminService->store($request);
+        $createAdmin->execute($request->toDto());
 
         session()->flash('message', __('Adminstrator created successifuly'));
 
@@ -35,12 +30,9 @@ class AdminController extends Controller
         return view('pages.admin.user.form', compact('user'));
     }
 
-    /**
-     * @throws Throwable
-     */
-    public function update(AdminRequest $request, User $user): RedirectResponse
+    public function update(AdminRequest $request, User $user, UpdateUserAction $updateUser): RedirectResponse
     {
-        $this->adminService->update($request, $user);
+        $updateUser->execute($request->toDto(), $user);
 
         session()->flash('message', __('Adminstrator edited successifuly'));
 
@@ -50,12 +42,12 @@ class AdminController extends Controller
     /**
      * @throws Throwable
      */
-    public function destroy(User $user): RedirectResponse
+    public function destroy(User $user, DeleteUserAction $deleteUser): RedirectResponse
     {
         if (Auth::user()->getAuthIdentifier() == $user->getId())
             abort(Response::HTTP_FORBIDDEN);
 
-        $this->adminService->destroy($user);
+        $deleteUser->execute($user);
 
         session()->flash('message', __('Adminstrator edited successifuly'));
 

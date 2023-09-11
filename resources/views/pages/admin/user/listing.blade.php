@@ -34,10 +34,18 @@
                         </li>
 
                         <li class="list-group-item col-md-2 d-flex align-items-center justify-content-evenly item-actions">
-                            <a class="btn btn-sm btn-outline-warning"
-                               href="{{route('admin.user.edit', $item->getId())}}">
-                                <i class="fa-regular fa-pen-to-square"></i>
-                            </a>
+
+                            @if(auth()->user()->getAuthIdentifier()==$item->getId())
+                                <a class="btn btn-sm btn-outline-warning"
+                                   href="{{route('admin.account.edit')}}">
+                                    <i class="fa-regular fa-pen-to-square"></i>
+                                </a>
+                            @else
+                                <a class="btn btn-sm btn-outline-warning"
+                                   href="{{route('admin.user.edit', $item->getId())}}">
+                                    <i class="fa-regular fa-pen-to-square"></i>
+                                </a>
+                            @endif
 
                             @if(auth()->user()->getAuthIdentifier()!=$item->getId())
                                 <form action="{{ route('admin.user.destroy', $item) }}" method="POST">
