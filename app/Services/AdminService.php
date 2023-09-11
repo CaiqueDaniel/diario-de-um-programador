@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Services;
+namespace App\Services;
 
 use App\Enums\Roles;
 use App\Http\Requests\Post\AdminRequest;
