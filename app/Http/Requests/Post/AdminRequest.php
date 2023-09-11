@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Post;
 
+use App\Dtos\Users\UserDto;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -20,5 +21,13 @@ class AdminRequest extends FormRequest
             'email' => ['required', 'email', $unique, 'max:255'],
             'name' => ['required', 'string', 'max:255']
         ];
+    }
+
+    public function toDto(): UserDto
+    {
+        return new UserDto(
+            $this->get('name'),
+            $this->get('email')
+        );
     }
 }
