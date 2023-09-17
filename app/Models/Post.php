@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Cocur\Slugify\Slugify;
 use DateTime;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\{Model, Builder, SoftDeletes};
@@ -119,7 +120,9 @@ class Post extends Model
 
     public function setPermalink(string $value): self
     {
-        $this->attributes['permalink'] = $value;
+        $slugfy = new Slugify();
+
+        $this->attributes['permalink'] = $slugfy->slugify($value);
         return $this;
     }
 
