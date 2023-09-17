@@ -93,6 +93,12 @@ class Post extends Model
         return $this->categories;
     }
 
+    public function getAuthor(): User
+    {
+        /** @var User */
+        return $this->author()->firstOrFail();
+    }
+
     public function setTitle(string $value): self
     {
         $this->attributes['title'] = $value;
@@ -133,6 +139,17 @@ class Post extends Model
     {
         /** @var Builder $builder */
         $builder = static::withTrashed();
+
+        if (!empty($search))
+            $builder->where('title', 'like', '%' . $search . '%');
+
+        return $builder->with('author')->orderBy('id', 'desc')->paginate(self::LIMIT);
+    }
+
+    public static function findAllByAuthor(User $user, string $search = null): LengthAwarePaginator
+    {
+        /** @var Builder $builder */
+        $builder = static::withTrashed()->where('author', '=', $user->getId());
 
         if (!empty($search))
             $builder->where('title', 'like', '%' . $search . '%');

@@ -2,22 +2,20 @@
 
 namespace Tests\Feature;
 
-use App\Models\Category;
-use App\Models\Post;
-use App\Models\User;
+use App\Enums\Roles;
+use App\Models\{Category, Post};
 use Cocur\Slugify\Slugify;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\{RefreshDatabase, WithFaker};
 use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
-use Tests\Feature\Fixture\WithLoggedSuperAdmin;
+use Illuminate\Support\Facades\{DB, Storage};
+use Silber\Bouncer\Bouncer;
+use Tests\Feature\Fixture\{WithLoggedSuperAdmin, WithPostFactory, WithUserFactory};
 use Tests\TestCase;
 
 class PostTest extends TestCase
 {
-    use RefreshDatabase, WithFaker, WithLoggedSuperAdmin;
+    use RefreshDatabase, WithFaker, WithLoggedSuperAdmin, WithUserFactory, WithPostFactory;
 
     protected function setUp(): void
     {
@@ -26,13 +24,51 @@ class PostTest extends TestCase
         $this->setupUserWithSessionByTest($this);
     }
 
-    public function test_listing(): void
+    public function test_given_an_admin_user_when_access_listing_page_it_should_list_articles_from_this_user(): void
     {
-        $response = $this->get('/painel/artigos/listar');
+        $this->post('/logout');
+
+        $userA = $this->factoryUser();
+        $userA->save();
+
+        $userB = $this->factoryUser();
+        $userB->save();
+
+        $bouncer = Bouncer::create();
+
+        $bouncer->assign(Roles::ADMIN->name)->to($userA);
+        $bouncer->assign(Roles::ADMIN->name)->to($userB);
+
+        $postA = $this->factoryPost();
+        $userA->posts()->save($postA);
+
+        $postB = $this->factoryPost();
+        $userB->posts()->save($postB);
+
+        $this->post('/login', [
+            'email' => $userA->getEmail(),
+            'password' => '123456'
+        ]);
+
+        $response = $this->get(route('admin.post.index'));
 
         $response
             ->assertOk()
-            ->assertViewIs('pages.admin.post.listing');
+            ->assertViewIs('pages.admin.post.listing')
+            ->assertViewHas('response', function (LengthAwarePaginator $data) use ($userA) {
+                /** @var Post[] $items */
+                $items = $data->items();
+
+                $this->assertNotEmpty($items);
+
+                foreach ($items as $item) {
+                    if ($item->getAuthor()->getId() != $userA->getId())
+                        return false;
+                }
+
+                return true;
+            });
+
     }
 
     public function test_load_form_create(): void

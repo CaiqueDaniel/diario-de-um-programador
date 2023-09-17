@@ -23,7 +23,9 @@ class PostController extends Controller
 
     public function index(SearchRequest $request): View
     {
-        $response = Post::findAll($request->get('search'));
+        /** @var User $user */
+        $user = auth()->user();
+        $response = Post::findAllByAuthor($user, $request->get('search'));
 
         return view('pages.admin.post.listing', compact('response'));
     }
