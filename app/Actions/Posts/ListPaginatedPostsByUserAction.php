@@ -10,8 +10,9 @@ class ListPaginatedPostsByUserAction
 {
     public function execute(User $user, ?string $search): LengthAwarePaginator
     {
-        if ($this->isUserSuperAdmin($user))
+        if ($this->isUserSuperAdmin($user)) {
             return Post::findAll($search);
+        }
 
         return Post::findAllByAuthor($user, $search);
     }

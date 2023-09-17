@@ -35,8 +35,9 @@ class Post extends Model
      */
     public function publish(): void
     {
-        if ($this->isPublished())
+        if ($this->isPublished()) {
             return;
+        }
 
         $this->setPublishedAt(Carbon::now())->saveOrFail();
     }
@@ -80,16 +81,18 @@ class Post extends Model
     {
         $publishedAt = $this->attributes['published_at'] ?? null;
 
-        if (empty($publishedAt))
+        if (empty($publishedAt)) {
             return null;
+        }
 
         return new Carbon($publishedAt);
     }
 
     public function getCategories(): Collection
     {
-        if (empty($this->categories))
+        if (empty($this->categories)) {
             $this->categories = $this->categories()->get();
+        }
 
         return $this->categories;
     }
@@ -143,8 +146,9 @@ class Post extends Model
         /** @var Builder $builder */
         $builder = static::withTrashed();
 
-        if (!empty($search))
+        if (!empty($search)) {
             $builder->where('title', 'like', '%' . $search . '%');
+        }
 
         return $builder->with('author')->orderBy('id', 'desc')->paginate(self::LIMIT);
     }
@@ -154,8 +158,9 @@ class Post extends Model
         /** @var Builder $builder */
         $builder = static::withTrashed()->where('author', '=', $user->getId());
 
-        if (!empty($search))
+        if (!empty($search)) {
             $builder->where('title', 'like', '%' . $search . '%');
+        }
 
         return $builder->with('author')->orderBy('id', 'desc')->paginate(self::LIMIT);
     }
@@ -164,8 +169,9 @@ class Post extends Model
     {
         $builder = static::query()->whereNotNull('published_at');
 
-        if (!empty($search))
+        if (!empty($search)) {
             $builder->where('title', 'like', '%' . $search . '%');
+        }
 
         return $builder->with('author')->orderBy('id', 'desc')->paginate(self::LIMIT);
     }

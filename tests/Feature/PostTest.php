@@ -80,8 +80,9 @@ class PostTest extends TestCase
                 $this->assertNotEmpty($items);
 
                 foreach ($items as $item) {
-                    if ($item->getAuthor()->getId() != $userA->getId())
+                    if ($item->getAuthor()->getId() != $userA->getId()) {
                         return false;
+                    }
                 }
 
                 return true;
@@ -338,8 +339,9 @@ class PostTest extends TestCase
     private function saveMultipleMockPosts()
     {
         DB::transaction(function () {
-            for ($i = 0; $i < 10; $i++)
+            for ($i = 0; $i < 10; $i++) {
                 $this->user->posts()->save($this->factoryPost());
+            }
         });
     }
 }
