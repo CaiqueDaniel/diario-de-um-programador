@@ -24,6 +24,33 @@ class PostTest extends TestCase
         $this->setupUserWithSessionByTest($this);
     }
 
+    public function test_given_an_super_admin_user_when_access_listing_page_it_should_list_articles_from_all_users(): void
+    {
+        $userA = $this->factoryUser();
+        $userA->save();
+
+        $userB = $this->factoryUser();
+        $userB->save();
+
+        $bouncer = Bouncer::create();
+
+        $bouncer->assign(Roles::ADMIN->name)->to($userA);
+        $bouncer->assign(Roles::ADMIN->name)->to($userB);
+
+        $postA = $this->factoryPost();
+        $userA->posts()->save($postA);
+
+        $postB = $this->factoryPost();
+        $userB->posts()->save($postB);
+
+        $response = $this->get(route('admin.post.index'));
+
+        $response
+            ->assertOk()
+            ->assertViewIs('pages.admin.post.listing')
+            ->assertViewHas('response', fn(LengthAwarePaginator $data) => !empty($data->items()));
+    }
+
     public function test_given_an_admin_user_when_access_listing_page_it_should_list_articles_from_this_user(): void
     {
         $this->post('/logout');
