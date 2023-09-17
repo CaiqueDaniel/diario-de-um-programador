@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Actions\Posts\ListPaginatedPostsByUserAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Get\SearchRequest;
 use App\Http\Requests\Post\PostRequest;
@@ -21,9 +22,11 @@ class PostController extends Controller
         $this->postService = $postService;
     }
 
-    public function index(SearchRequest $request): View
+    public function index(SearchRequest $request, ListPaginatedPostsByUserAction $listPaginatedPostsByUserAction): View
     {
-        $response = Post::findAll($request->get('search'));
+        /** @var User $user */
+        $user = auth()->user();
+        $response = $listPaginatedPostsByUserAction->execute($user, $request->get('search'));
 
         return view('pages.admin.post.listing', compact('response'));
     }

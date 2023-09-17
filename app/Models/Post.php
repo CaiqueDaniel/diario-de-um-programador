@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Cocur\Slugify\Slugify;
 use DateTime;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\{Model, Builder, SoftDeletes};
@@ -34,8 +35,9 @@ class Post extends Model
      */
     public function publish(): void
     {
-        if ($this->isPublished())
+        if ($this->isPublished()) {
             return;
+        }
 
         $this->setPublishedAt(Carbon::now())->saveOrFail();
     }
@@ -79,18 +81,26 @@ class Post extends Model
     {
         $publishedAt = $this->attributes['published_at'] ?? null;
 
-        if (empty($publishedAt))
+        if (empty($publishedAt)) {
             return null;
+        }
 
         return new Carbon($publishedAt);
     }
 
     public function getCategories(): Collection
     {
-        if (empty($this->categories))
+        if (empty($this->categories)) {
             $this->categories = $this->categories()->get();
+        }
 
         return $this->categories;
+    }
+
+    public function getAuthor(): User
+    {
+        /** @var User */
+        return $this->author()->firstOrFail();
     }
 
     public function setTitle(string $value): self
@@ -113,7 +123,9 @@ class Post extends Model
 
     public function setPermalink(string $value): self
     {
-        $this->attributes['permalink'] = $value;
+        $slugfy = new Slugify();
+
+        $this->attributes['permalink'] = $slugfy->slugify($value);
         return $this;
     }
 
@@ -134,8 +146,21 @@ class Post extends Model
         /** @var Builder $builder */
         $builder = static::withTrashed();
 
-        if (!empty($search))
+        if (!empty($search)) {
             $builder->where('title', 'like', '%' . $search . '%');
+        }
+
+        return $builder->with('author')->orderBy('id', 'desc')->paginate(self::LIMIT);
+    }
+
+    public static function findAllByAuthor(User $user, string $search = null): LengthAwarePaginator
+    {
+        /** @var Builder $builder */
+        $builder = static::withTrashed()->where('author', '=', $user->getId());
+
+        if (!empty($search)) {
+            $builder->where('title', 'like', '%' . $search . '%');
+        }
 
         return $builder->with('author')->orderBy('id', 'desc')->paginate(self::LIMIT);
     }
@@ -144,8 +169,9 @@ class Post extends Model
     {
         $builder = static::query()->whereNotNull('published_at');
 
-        if (!empty($search))
+        if (!empty($search)) {
             $builder->where('title', 'like', '%' . $search . '%');
+        }
 
         return $builder->with('author')->orderBy('id', 'desc')->paginate(self::LIMIT);
     }

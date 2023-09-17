@@ -2,22 +2,20 @@
 
 namespace Tests\Feature;
 
-use App\Models\Category;
-use App\Models\Post;
-use App\Models\User;
+use App\Enums\Roles;
+use App\Models\{Category, Post};
 use Cocur\Slugify\Slugify;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\{RefreshDatabase, WithFaker};
 use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
-use Tests\Feature\Fixture\WithLoggedSuperAdmin;
+use Illuminate\Support\Facades\{DB, Storage};
+use Silber\Bouncer\Bouncer;
+use Tests\Feature\Fixture\{WithLoggedSuperAdmin, WithPostFactory, WithUserFactory};
 use Tests\TestCase;
 
 class PostTest extends TestCase
 {
-    use RefreshDatabase, WithFaker, WithLoggedSuperAdmin;
+    use RefreshDatabase, WithFaker, WithLoggedSuperAdmin, WithUserFactory, WithPostFactory;
 
     protected function setUp(): void
     {
@@ -26,13 +24,70 @@ class PostTest extends TestCase
         $this->setupUserWithSessionByTest($this);
     }
 
-    public function test_listing(): void
+    public function test_given_an_super_admin_user_when_access_listing_page_it_should_list_articles_from_all_users(): void
     {
-        $response = $this->get('/painel/artigos/listar');
+        $user = $this->factoryUser();
+        $user->save();
+
+        Bouncer::create()->assign(Roles::ADMIN->name)->to($user);
+
+        $post = $this->factoryPost();
+        $user->posts()->save($post);
+
+        $response = $this->get(route('admin.post.index'));
 
         $response
             ->assertOk()
-            ->assertViewIs('pages.admin.post.listing');
+            ->assertViewIs('pages.admin.post.listing')
+            ->assertViewHas('response', fn(LengthAwarePaginator $data) => !empty($data->items()));
+    }
+
+    public function test_given_an_admin_user_when_access_listing_page_it_should_list_articles_from_this_user(): void
+    {
+        $this->post('/logout');
+
+        $userA = $this->factoryUser();
+        $userA->save();
+
+        $userB = $this->factoryUser();
+        $userB->save();
+
+        $bouncer = Bouncer::create();
+
+        $bouncer->assign(Roles::ADMIN->name)->to($userA);
+        $bouncer->assign(Roles::ADMIN->name)->to($userB);
+
+        $postA = $this->factoryPost();
+        $userA->posts()->save($postA);
+
+        $postB = $this->factoryPost();
+        $userB->posts()->save($postB);
+
+        $this->post('/login', [
+            'email' => $userA->getEmail(),
+            'password' => '123456'
+        ]);
+
+        $response = $this->get(route('admin.post.index'));
+
+        $response
+            ->assertOk()
+            ->assertViewIs('pages.admin.post.listing')
+            ->assertViewHas('response', function (LengthAwarePaginator $data) use ($userA) {
+                /** @var Post[] $items */
+                $items = $data->items();
+
+                $this->assertNotEmpty($items);
+
+                foreach ($items as $item) {
+                    if ($item->getAuthor()->getId() != $userA->getId()) {
+                        return false;
+                    }
+                }
+
+                return true;
+            });
+
     }
 
     public function test_load_form_create(): void
@@ -110,14 +165,7 @@ class PostTest extends TestCase
 
     public function test_deletion(): void
     {
-        $title = $this->faker->name();
-
-        $post = new Post();
-        $post->setTitle($title)
-            ->setSubtitle($this->faker->text())
-            ->setArticle($this->faker->text())
-            ->setPermalink($title)
-            ->setThumbnail(UploadedFile::fake()->create($this->faker->name() . '.jpg'));
+        $post = $this->factoryPost();
 
         $this->user->posts()->save($post);
 
@@ -134,22 +182,7 @@ class PostTest extends TestCase
 
     public function test_search_with_results(): void
     {
-        $slugfy = new Slugify();
-
-        DB::transaction(function () use ($slugfy) {
-            for ($i = 0; $i < 10; $i++) {
-                $title = $this->faker->name();
-
-                $post = new Post();
-                $post->setTitle($title)
-                    ->setSubtitle($this->faker->text())
-                    ->setArticle($this->faker->text())
-                    ->setPermalink($slugfy->slugify($title))
-                    ->setThumbnail(UploadedFile::fake()->create($this->faker->name() . '.jpg'));
-
-                $this->user->posts()->save($post);
-            }
-        });
+        $this->saveMultipleMockPosts();
 
         /** @var Post $post */
         $post = Post::all()->first();
@@ -167,22 +200,7 @@ class PostTest extends TestCase
 
     public function test_search_without_results(): void
     {
-        $slugfy = new Slugify();
-
-        DB::transaction(function () use ($slugfy) {
-            for ($i = 0; $i < 10; $i++) {
-                $title = $this->faker->name();
-
-                $post = new Post();
-                $post->setTitle($title)
-                    ->setSubtitle($this->faker->text())
-                    ->setArticle($this->faker->text())
-                    ->setPermalink($slugfy->slugify($title))
-                    ->setThumbnail(UploadedFile::fake()->create($this->faker->name() . '.jpg'));
-
-                $this->user->posts()->save($post);
-            }
-        });
+        $this->saveMultipleMockPosts();
 
         $response = $this->get("/painel/artigos/listar?search=invalid");
 
@@ -193,15 +211,7 @@ class PostTest extends TestCase
 
     public function test_enabling_item(): void
     {
-        $slugfy = new Slugify();
-        $title = $this->faker->name();
-
-        $post = new Post();
-        $post->setTitle($title)
-            ->setSubtitle($this->faker->text())
-            ->setArticle($this->faker->text())
-            ->setPermalink($slugfy->slugify($title))
-            ->setThumbnail(UploadedFile::fake()->create($this->faker->name() . '.jpg'));
+        $post = $this->factoryPost();
 
         $this->user->posts()->save($post);
 
@@ -220,15 +230,7 @@ class PostTest extends TestCase
 
     public function test_disabling_item(): void
     {
-        $slugfy = new Slugify();
-        $title = $this->faker->name();
-
-        $post = new Post();
-        $post->setTitle($title)
-            ->setSubtitle($this->faker->text())
-            ->setArticle($this->faker->text())
-            ->setPermalink($slugfy->slugify($title))
-            ->setThumbnail(UploadedFile::fake()->create($this->faker->name() . '.jpg'));
+        $post = $this->factoryPost();
 
         $this->user->posts()->save($post);
 
@@ -282,14 +284,7 @@ class PostTest extends TestCase
 
     public function test_view_enabled_and_published_post(): void
     {
-        $title = $this->faker->title();
-
-        $post = new Post();
-        $post->setTitle($title)
-            ->setSubtitle($this->faker->text())
-            ->setArticle($this->faker->text())
-            ->setPermalink($title)
-            ->setThumbnail(UploadedFile::fake()->create($this->faker->name() . '.jpg'));
+        $post = $this->factoryPost();
 
         $this->user->posts()->save($post);
 
@@ -305,14 +300,7 @@ class PostTest extends TestCase
 
     public function test_view_disabled_and_published_post(): void
     {
-        $title = $this->faker->title();
-
-        $post = new Post();
-        $post->setTitle($title)
-            ->setSubtitle($this->faker->text())
-            ->setArticle($this->faker->text())
-            ->setPermalink($title)
-            ->setThumbnail(UploadedFile::fake()->create($this->faker->name() . '.jpg'));
+        $post = $this->factoryPost();
 
         $this->user->posts()->save($post);
 
@@ -328,14 +316,7 @@ class PostTest extends TestCase
 
     public function test_view_unpublished_post(): void
     {
-        $title = $this->faker->title();
-
-        $post = new Post();
-        $post->setTitle($title)
-            ->setSubtitle($this->faker->text())
-            ->setArticle($this->faker->text())
-            ->setPermalink($title)
-            ->setThumbnail(UploadedFile::fake()->create($this->faker->name() . '.jpg'));
+        $post = $this->factoryPost();
 
         $this->user->posts()->save($post);
 
@@ -348,17 +329,19 @@ class PostTest extends TestCase
 
     public function test_view_unexistent_post(): void
     {
-        $title = $this->faker->title();
-
-        $post = new Post();
-        $post->setTitle($title)
-            ->setSubtitle($this->faker->text())
-            ->setArticle($this->faker->text())
-            ->setPermalink($title)
-            ->setThumbnail(UploadedFile::fake()->create($this->faker->name() . '.jpg'));
+        $post = $this->factoryPost();
 
         $response = $this->get(route('web.post.view', ['slug' => $post->getPermalink()]));
 
         $response->assertNotFound();
+    }
+
+    private function saveMultipleMockPosts()
+    {
+        DB::transaction(function () {
+            for ($i = 0; $i < 10; $i++) {
+                $this->user->posts()->save($this->factoryPost());
+            }
+        });
     }
 }
