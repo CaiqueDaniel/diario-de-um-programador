@@ -17,9 +17,9 @@ class CategoryRequest extends FormRequest
 
         /** @var Category $category */
         if (!empty($category = $this->route('category'))) {
-            $unique->ignore($category->id);
+            $unique->ignore($category->getId());
 
-            $withoutOwnId = new WithoutOwnId($category->id, ((int)$this->request->get('parent')));
+            $withoutOwnId = new WithoutOwnId($category->getId(), ((int)$this->request->get('parent')));
         }
 
         return [
