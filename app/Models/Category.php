@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Cocur\Slugify\Slugify;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\{Builder, Model, SoftDeletes};
@@ -45,9 +46,18 @@ class Category extends Model
         return $this->attributes['permalink'];
     }
 
-    public function setPermalink(string $value): self
+    public function setName(string $value): self
     {
-        $this->attributes['permalink'] = $value;
+        $this->attributes['name'] = $value;
+        return $this;
+    }
+
+    public function setPermalink(string $value, string|null $parentPermalink = null): self
+    {
+        $slugfy = new Slugify();
+        $slug = $slugfy->slugify($value);
+
+        $this->attributes['permalink'] = $parentPermalink ? "{$parentPermalink}/{$slug}" : $slug;
         return $this;
     }
 

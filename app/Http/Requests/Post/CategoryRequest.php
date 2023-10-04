@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Post;
 
+use App\Dtos\Category\CategoryDto;
 use App\Models\Category;
 use App\Rules\WithoutOwnId;
 use Illuminate\Foundation\Http\FormRequest;
@@ -25,5 +26,10 @@ class CategoryRequest extends FormRequest
             'name' => ['required', 'string', 'max:255', $unique],
             'parent' => ['numeric', 'nullable', $withoutOwnId]
         ];
+    }
+
+    public function toDto(): CategoryDto
+    {
+        return new CategoryDto($this->get('name'), $this->get('parent'));
     }
 }
