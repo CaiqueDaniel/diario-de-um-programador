@@ -27,17 +27,17 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="subtitle" class="form-label">{{__('Subtitle')}}*</label>
-                        <textarea class="form-control" name="subtitle" id="subtitle" rows="3"
-                                  required>{{!empty($post) ? $post->getSubtitle() : old('subtitle') }}</textarea>
+                        <label for="subtitle" class="form-label">{{__('Subtitle')}}</label>
+                        <textarea class="form-control" name="subtitle" id="subtitle"
+                                  rows="3">{{!empty($post) && !empty($post->getSubtitle()) ? $post->getSubtitle() : old('subtitle') }}</textarea>
 
                         <x-alerts.invalid-field field="subtitle"/>
                     </div>
 
                     <div class="mb-3">
-                        <label for="article" class="form-label">{{__('Thumbnail')}}*</label>
+                        <label for="article" class="form-label">{{__('Thumbnail')}}</label>
 
-                        @if(!empty($post))
+                        @if(!empty($post) and !empty($post->getThumbnail()))
                             <img src="{{asset('storage/'.$post->getThumbnail())}}" alt="Thumbnail" class="mb-3"
                                  style="width: 100%"/>
                         @endif

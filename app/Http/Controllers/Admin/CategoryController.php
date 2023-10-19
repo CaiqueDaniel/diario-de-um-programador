@@ -2,19 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Actions\Categories\{CreateCategoryAction, UpdateCategoryAction};
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Get\SearchRequest;
 use App\Http\Requests\Post\CategoryRequest;
 use App\Models\Category;
-use Cocur\Slugify\Slugify;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
 class CategoryController extends Controller
 {
-    private const FILLABLE_KEYS = ['name'];
-
     public function index(SearchRequest $request): View
     {
         $items = Category::findAll($request->get('search'));
@@ -22,21 +20,9 @@ class CategoryController extends Controller
         return view('pages.admin.category.listing', compact('items'));
     }
 
-    public function store(CategoryRequest $request): RedirectResponse
+    public function store(CategoryRequest $request, CreateCategoryAction $createCategory): RedirectResponse
     {
-        $slugfy = new Slugify();
-        $category = new Category($request->only(self::FILLABLE_KEYS));
-
-        /** @var Category $parentCategory */
-        $parentCategory = Category::query()->find($request->get('parent'));
-
-        if (empty($parentCategory)) {
-            $category->setPermalink($slugfy->slugify($category->getName()));
-            $category->save();
-        } else {
-            $category->setPermalink("{$parentCategory->getPermalink()}/{$slugfy->slugify($category->getName())}");
-            $parentCategory->children()->save($category);
-        }
+        $createCategory->execute($request->toDto());
 
         session()->flash('message', 'Categoria criada com sucesso');
 
@@ -48,26 +34,9 @@ class CategoryController extends Controller
         return view('pages.admin.category.form', compact('category'));
     }
 
-    public function update(Category $category, CategoryRequest $request): RedirectResponse
+    public function update(Category $category, CategoryRequest $request, UpdateCategoryAction $updateCategory): RedirectResponse
     {
-        $slugfy = new Slugify();
-        $category->fill($request->only(self::FILLABLE_KEYS));
-
-        /** @var Category $parentCategory */
-        $parentCategory = Category::query()->find($request->get('parent'));
-
-        if (empty($parentCategory)) {
-            $parentCategory = $category->parent()->first();
-
-            if (!empty($parentCategory))
-                $category->parent()->disassociate();
-
-            $category->setPermalink($slugfy->slugify($category->getName()));
-            $category->save();
-        } else {
-            $category->setPermalink("{$parentCategory->getPermalink()}/{$slugfy->slugify($category->getName())}");
-            $parentCategory->children()->save($category);
-        }
+        $updateCategory->execute($request->toDto(), $category);
 
         session()->flash('message', 'Categoria editada com sucesso');
 

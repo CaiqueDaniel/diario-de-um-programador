@@ -3,8 +3,13 @@
 @endphp
 
 <div class="col-12 position-relative" id="article-cover">
-    <img src="{{asset("storage/{$post->getThumbnail()}")}}" class="d-block w-100" loading="lazy"
-         alt="{{$post->getTitle()}}">
+    @empty($post->getThumbnail())
+        <img src="{{asset("assets/default-post-cover.png")}}" class="d-block w-100" loading="lazy"
+             alt="{{$post->getTitle()}}">
+    @else
+        <img src="{{asset("storage/{$post->getThumbnail()}")}}" class="d-block w-100" loading="lazy"
+             alt="{{$post->getTitle()}}">
+    @endempty
 
     <div class="
             hud-cover
@@ -14,6 +19,9 @@
             px-2
         ">
         <h1 class="text-white">{{$post->getTitle()}}</h1>
-        <h3 class="text-white">{{$post->getSubtitle()}}</h3>
+
+        @if($post->getSubtitle())
+            <h3 class="text-white">{{$post->getSubtitle()}}</h3>
+        @endif
     </div>
 </div>

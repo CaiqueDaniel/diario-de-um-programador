@@ -52,7 +52,7 @@ class Post extends Model
         return $this->attributes['title'];
     }
 
-    public function getSubtitle(): string
+    public function getSubtitle(): ?string
     {
         return $this->attributes['subtitle'];
     }
@@ -67,7 +67,7 @@ class Post extends Model
         return $this->attributes['permalink'];
     }
 
-    public function getThumbnail(): string
+    public function getThumbnail(): ?string
     {
         return $this->attributes['thumbnail'];
     }

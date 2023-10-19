@@ -4,7 +4,7 @@
 
 @extends('layouts.web', [
     'title'=>$post->getTitle(),
-    'description'=>$post->getSubtitle(),
+    'description'=>$post->getSubtitle() ?? $post->getTitle(),
     'thumbnail'=>$post->getThumbnail(),
     'pagename'=>'posts',
 ])
