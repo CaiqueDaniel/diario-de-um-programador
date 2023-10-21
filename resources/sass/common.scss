@@ -32,6 +32,10 @@ h1, h2, h3, h4, h5, h6 {
     font-family: $font-family-sans-serif-headers !important;
 }
 
+img{
+    max-width: 100%;
+}
+
 .dropdown:hover .dropdown-menu {
     display: block;
     margin-top: 0;
