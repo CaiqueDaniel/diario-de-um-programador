@@ -19,7 +19,7 @@
             <time datetime="{{$post->getPublishedAt()}}">Em: @datetime($publishedAt)</time>
         </div>
 
-        <article class="mt-4" style="text-align: justify">
+        <article class="mt-4">
             {!! $post->getArticle() !!}
         </article>
     </div>
