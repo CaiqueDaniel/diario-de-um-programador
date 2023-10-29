@@ -30,5 +30,8 @@
     "View Site": "Ver Site",
     "Users": "Usuários",
     "Name": "Nome",
-    "Account": "Conta"
+    "Account": "Conta",
+    "Fullbanner successfully created": "Fullbanner criado com sucesso",
+    "Fullbanner successfully updated": "Fullbanner alterado com sucesso",
+    "Fullbanner successfully deleted": "Fullbanner excluído com sucesso"
 }

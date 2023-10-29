@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Actions\Fullbanner\CreateFullbannerAction;
+use App\Actions\Fullbanner\DeleteFullbannerAction;
+use App\Actions\Fullbanner\UpdateFullbannerAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Get\SearchRequest;
 use App\Http\Requests\Post\FullBannerRequest;
 use App\Models\FullBanner;
-use App\Services\FullBannerService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
@@ -14,13 +16,6 @@ use Throwable;
 
 class FullBannerController extends Controller
 {
-    private FullBannerService $fullBannerService;
-
-    public function __construct(FullBannerService $fullBannerService)
-    {
-        $this->fullBannerService = $fullBannerService;
-    }
-
     public function index(SearchRequest $request): View
     {
         $response = FullBanner::findAll($request->get('search'));
@@ -31,11 +26,11 @@ class FullBannerController extends Controller
     /**
      * @throws Throwable
      */
-    public function store(FullBannerRequest $request): RedirectResponse
+    public function store(FullBannerRequest $request, CreateFullbannerAction $createFullbanner): RedirectResponse
     {
-        $this->fullBannerService->store($request);
+        $createFullbanner->execute($request->toDto());
 
-        session()->flash('message', 'Fullbanner criado com sucesso');
+        session()->flash('message', __('Fullbanner successfully created'));
 
         return redirect()->route('admin.fullbanner.index');
     }
@@ -48,20 +43,24 @@ class FullBannerController extends Controller
     /**
      * @throws Throwable
      */
-    public function update(FullBanner $fullbanner, FullBannerRequest $request): RedirectResponse
+    public function update(
+        FullBanner             $fullbanner,
+        FullBannerRequest      $request,
+        UpdateFullbannerAction $updateFullbanner
+    ): RedirectResponse
     {
-        $this->fullBannerService->update($fullbanner, $request);
+        $updateFullbanner->execute($fullbanner, $request->toDto());
 
-        session()->flash('message', 'Fullbanner alterado com sucesso');
+        session()->flash('message', __('Fullbanner successfully updated'));
 
         return redirect()->route('admin.fullbanner.index');
     }
 
-    public function destroy(FullBanner $fullbanner): RedirectResponse
+    public function destroy(FullBanner $fullbanner, DeleteFullbannerAction $deleteFullbanner): RedirectResponse
     {
-        $this->fullBannerService->destroy($fullbanner);
+        $deleteFullbanner->execute($fullbanner);
 
-        session()->flash('message', 'Fullbanner excluído com sucesso');
+        session()->flash('message', __('Fullbanner successfully deleted'));
 
         return redirect()->route('admin.fullbanner.index');
     }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Post;
 
+use App\Dtos\Fullbanner\CreateFullbannerDto;
+use App\Dtos\Fullbanner\UpdateFullbannerDto;
 use Illuminate\Foundation\Http\FormRequest;
 
 class FullBannerRequest extends FormRequest
@@ -18,5 +20,22 @@ class FullBannerRequest extends FormRequest
             'link' => ['required', 'string', 'max:255'],
             'image' => $imageRules
         ];
+    }
+
+    public function toDto(): CreateFullbannerDto|UpdateFullbannerDto
+    {
+        if (empty($this->route()->parameter('fullbanner'))) {
+            return new CreateFullbannerDto(
+                $this->get('title'),
+                $this->get('link'),
+                $this->file('image')
+            );
+        }
+
+        return new UpdateFullbannerDto(
+            $this->get('title'),
+            $this->get('link'),
+            $this->file('image')
+        );
     }
 }
