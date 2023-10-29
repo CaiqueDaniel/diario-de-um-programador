@@ -2,13 +2,13 @@
 
 namespace App\Actions\Fullbanner;
 
-use App\Dtos\Fullbanner\CreateFullbannerDto;
+use App\Dtos\Fullbanner\UpdateFullbannerDto;
 use App\Models\FullBanner;
 use App\Services\FileUploadService;
 use Illuminate\Http\UploadedFile;
 use Throwable;
 
-class CreateFullbannerAction
+class UpdateFullbannerAction
 {
     public function __construct(private readonly FileUploadService $fileUploadService)
     {
@@ -17,18 +17,16 @@ class CreateFullbannerAction
     /**
      * @throws Throwable
      */
-    public function execute(CreateFullbannerDto $dto): FullBanner
+    public function execute(FullBanner $fullbanner, UpdateFullbannerDto $dto): FullBanner
     {
-        $total = FullBanner::query()->count();
-
-        $fullbanner = new FullBanner([
+        $fullbanner->fill([
             'title' => $dto->title,
             'link' => $dto->link
         ]);
 
-        $this->uploadImage($fullbanner, $dto->image);
+        if (!empty($dto->image))
+            $this->uploadImage($fullbanner, $dto->image);
 
-        $fullbanner->setPosition($total + 1);
         $fullbanner->saveOrFail();
 
         return $fullbanner;
@@ -37,6 +35,10 @@ class CreateFullbannerAction
     private function uploadImage(FullBanner $fullbanner, UploadedFile $file): void
     {
         $image = $this->fileUploadService->upload($file, 'fullbanners');
+
+        if (!empty($fullbanner->image))
+            $this->fileUploadService->delete($fullbanner->image);
+
         $fullbanner->setImage($image);
     }
 }

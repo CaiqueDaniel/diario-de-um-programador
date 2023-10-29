@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Actions\Fullbanner\CreateFullbannerAction;
+use App\Actions\Fullbanner\UpdateFullbannerAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Get\SearchRequest;
 use App\Http\Requests\Post\FullBannerRequest;
@@ -36,7 +37,7 @@ class FullBannerController extends Controller
     {
         $createFullbanner->execute($request->toDto());
 
-        session()->flash('message', __('Fullbanner successifuly created'));
+        session()->flash('message', __('Fullbanner successfully created'));
 
         return redirect()->route('admin.fullbanner.index');
     }
@@ -49,11 +50,15 @@ class FullBannerController extends Controller
     /**
      * @throws Throwable
      */
-    public function update(FullBanner $fullbanner, FullBannerRequest $request): RedirectResponse
+    public function update(
+        FullBanner             $fullbanner,
+        FullBannerRequest      $request,
+        UpdateFullbannerAction $updateFullbanner
+    ): RedirectResponse
     {
-        $this->fullBannerService->update($fullbanner, $request);
+        $updateFullbanner->execute($fullbanner, $request->toDto());
 
-        session()->flash('message', 'Fullbanner alterado com sucesso');
+        session()->flash('message', __('Fullbanner successfully updated'));
 
         return redirect()->route('admin.fullbanner.index');
     }

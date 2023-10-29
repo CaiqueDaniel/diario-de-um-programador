@@ -31,5 +31,6 @@
     "Users": "Usuários",
     "Name": "Nome",
     "Account": "Conta",
-    "Fullbanner successifuly created": "Fullbanner criado com sucesso"
+    "Fullbanner successfully created": "Fullbanner criado com sucesso",
+    "Fullbanner successfully updated": "Fullbanner alterado com sucesso"
 }

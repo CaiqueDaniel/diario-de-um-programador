@@ -18,43 +18,6 @@ class FullBannerService
         $this->fileUploadService = $fileUploadService;
     }
 
-    /**
-     * @throws Throwable
-     */
-    public function store(Request $request): FullBanner
-    {
-        $total = FullBanner::query()->count();
-
-        $fullbanner = new FullBanner([
-            'title' => $request->get('title'),
-            'link' => $request->get('link')
-        ]);
-
-        $this->defineImage($fullbanner, $request);
-
-        $fullbanner->setPosition($total + 1);
-        $fullbanner->saveOrFail();
-
-        return $fullbanner;
-    }
-
-    /**
-     * @throws Throwable
-     */
-    public function update(FullBanner $fullbanner, Request $request): FullBanner
-    {
-        $fullbanner->fill([
-            'title' => $request->get('title'),
-            'link' => $request->get('link')
-        ]);
-
-        $this->defineImage($fullbanner, $request);
-
-        $fullbanner->saveOrFail();
-
-        return $fullbanner;
-    }
-
     public function destroy(FullBanner $fullbanner): void
     {
         $this->fileUploadService->delete($fullbanner->getImage());

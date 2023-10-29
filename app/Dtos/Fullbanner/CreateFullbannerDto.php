@@ -5,7 +5,7 @@ namespace App\Dtos\Fullbanner;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\UploadedFile;
 
-class FullbannerDto implements Arrayable
+class CreateFullbannerDto implements Arrayable
 {
     public function __construct(
         public readonly string       $title,
