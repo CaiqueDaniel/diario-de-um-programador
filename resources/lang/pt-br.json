@@ -32,5 +32,6 @@
     "Name": "Nome",
     "Account": "Conta",
     "Fullbanner successfully created": "Fullbanner criado com sucesso",
-    "Fullbanner successfully updated": "Fullbanner alterado com sucesso"
+    "Fullbanner successfully updated": "Fullbanner alterado com sucesso",
+    "Fullbanner successfully deleted": "Fullbanner excluído com sucesso"
 }
