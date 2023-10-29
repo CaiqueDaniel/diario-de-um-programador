@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Post;
 
+use App\Dtos\Fullbanner\FullbannerDto;
 use Illuminate\Foundation\Http\FormRequest;
 
 class FullBannerRequest extends FormRequest
@@ -18,5 +19,14 @@ class FullBannerRequest extends FormRequest
             'link' => ['required', 'string', 'max:255'],
             'image' => $imageRules
         ];
+    }
+
+    public function toDto(): FullbannerDto
+    {
+        return new FullbannerDto(
+            $this->get('title'),
+            $this->get('link'),
+            $this->file('image')
+        );
     }
 }
