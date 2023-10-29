@@ -60,7 +60,7 @@ class FullBannerController extends Controller
     {
         $deleteFullbanner->execute($fullbanner);
 
-        session()->flash('message', 'Fullbanner excluído com sucesso');
+        session()->flash('message', __('Fullbanner successfully deleted'));
 
         return redirect()->route('admin.fullbanner.index');
     }
