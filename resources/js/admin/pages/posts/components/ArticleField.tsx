@@ -78,12 +78,9 @@ export default function ArticleField(props: Props): JSX.Element {
         formData.append('file', blobInfo.blob(), blobInfo.filename());
 
         return new Promise<string>(async (resolve, reject) => {
-            try {
-                const response = await window.axios.post<{ location: string }>('/painel/artigos/clipboard', formData);
-                resolve(response.data.location);
-            } catch (e) {
-                reject(e);
-            }
+            window.axios.post<{ location: string }>('/painel/artigos/clipboard', formData)
+                .then((response) => resolve(response.data.location))
+                .catch(reject);
         });
     }
 
