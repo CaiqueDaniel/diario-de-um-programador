@@ -84,11 +84,14 @@ export default function ArticleField(props: Props): JSX.Element {
                     branding: false,
                     height: 700,
                     menubar: true,
-                    plugins: plugins.join(' '),
+                    plugins: plugins,
                     toolbar: 'formatselect | bold italic underline strikethrough | forecolor backcolor blockquote | link image media | alignleft aligncenter alignright alignjustify | numlist bullist outdent indent | removeformat | codesample | fullscreen',
                     image_advtab: true,
                     content_css: '/css/tinymce/content.min.css',
                     content_style: 'body { font-family:Helvetica,Arial,sans-serif }',
+                    automatic_uploads: true,
+                    images_upload_url: '/painel/artigos/clipboard',
+                    images_replace_blob_uris: true,
                     codesample_languages
                 }}
             />
