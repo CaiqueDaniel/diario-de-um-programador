@@ -73,6 +73,20 @@ export default function ArticleField(props: Props): JSX.Element {
         {text: 'Bash', value: 'bash'},
     ];
 
+    const handleImageUpload = (blobInfo: any) => {
+        const formData = new FormData();
+        formData.append('file', blobInfo.blob(), blobInfo.filename());
+
+        return new Promise<string>(async (resolve, reject) => {
+            try {
+                const response = await window.axios.post<{ location: string }>('/painel/artigos/clipboard', formData);
+                resolve(response.data.location);
+            } catch (e) {
+                reject(e);
+            }
+        });
+    }
+
     const onInput = (value: string) => input.value = value;
 
     return (
@@ -90,8 +104,9 @@ export default function ArticleField(props: Props): JSX.Element {
                     content_css: '/css/tinymce/content.min.css',
                     content_style: 'body { font-family:Helvetica,Arial,sans-serif }',
                     automatic_uploads: true,
-                    images_upload_url: '/painel/artigos/clipboard',
                     images_replace_blob_uris: true,
+                    images_upload_credentials: true,
+                    images_upload_handler: handleImageUpload,
                     codesample_languages
                 }}
             />
