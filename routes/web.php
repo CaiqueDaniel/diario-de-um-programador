@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\{AccountController,
     PostController as AdminPostController,
     PublishPostController as AdminPublishPostController,
     AdminController,
+    UploadClipboardFilePostController,
     UserController as AdminUserController
 };
 
@@ -65,6 +66,8 @@ Route::middleware('auth')->prefix('painel')->group(function () {
         Route::prefix('artigos')->group(function () {
             Route::middleware('can:' . Abilities::CREATE_POSTS->name)->group(function () {
                 Route::view('criar', 'pages.admin.post.form')->name('admin.post.create');
+                Route::post('clipboard', UploadClipboardFilePostController::class)
+                    ->name('admin.post.store.clipboard');
             });
 
             Route::controller(AdminPostController::class)->group(function () {
