@@ -1,23 +1,13 @@
 <?php
 
-namespace App\Services;
+namespace App\Actions\Posts;
 
-use App\Models\{Post};
+use App\Models\Post;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class PostService
+class GetPostByPermalinkAction
 {
-    private FileUploadService $fileUploadService;
-
-    public function __construct(FileUploadService $fileUploadService)
-    {
-        $this->fileUploadService = $fileUploadService;
-    }
-
-    /**
-     * @throws ModelNotFoundException
-     */
-    public function getByPermalink(string $permalink): Post
+    public function execute(string $permalink): Post
     {
         /** @var Post $post */
         $post = Post::with('author')

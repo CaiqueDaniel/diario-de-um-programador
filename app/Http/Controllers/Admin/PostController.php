@@ -2,28 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Actions\Posts\DeletePostAction;
-use App\Actions\Posts\ListPaginatedPostsByUserAction;
-use App\Actions\Posts\UpdatePostAction;
+use App\Actions\Posts\{CreatePostAction, UpdatePostAction, DeletePostAction, ListPaginatedPostsByUserAction};
+use App\Models\{Post, User};
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Get\SearchRequest;
 use App\Http\Requests\Post\PostRequest;
-use App\Models\{Post, User};
-use App\Services\PostService;
-use App\Actions\Posts\CreatePostAction;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
 class PostController extends Controller
 {
-    private PostService $postService;
-
-    public function __construct(PostService $postService)
-    {
-        $this->postService = $postService;
-    }
-
     public function index(SearchRequest $request, ListPaginatedPostsByUserAction $listPaginatedPostsByUserAction): View
     {
         /** @var User $user */
