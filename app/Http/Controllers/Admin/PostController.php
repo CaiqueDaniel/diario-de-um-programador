@@ -6,9 +6,9 @@ use App\Actions\Posts\ListPaginatedPostsByUserAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Get\SearchRequest;
 use App\Http\Requests\Post\PostRequest;
-use App\Models\Post;
-use App\Models\User;
+use App\Models\{Post, User};
 use App\Services\PostService;
+use App\Actions\Posts\CreatePostAction;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,14 +31,14 @@ class PostController extends Controller
         return view('pages.admin.post.listing', compact('response'));
     }
 
-    public function store(PostRequest $request): RedirectResponse
+    public function store(PostRequest $request, CreatePostAction $createPost): RedirectResponse
     {
         /** @var User $user */
         $user = auth()->user();
 
-        $this->postService->store($user, $request);
+        $createPost->execute($request->toDto(), $user);
 
-        session()->flash('message', 'Artigo criado com sucesso');
+        session()->flash('message', __('Article successfully created'));
 
         return redirect()->route('admin.post.index');
     }

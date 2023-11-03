@@ -21,21 +21,6 @@ class PostService
         $this->fileUploadService = $fileUploadService;
     }
 
-    public function store(User $user, Request $request): Post
-    {
-        $post = new Post($request->only(self::FILLABLE_KEYS));
-
-        $this->definePermalink($post);
-        $this->defineThumbnail($post, $request);
-
-        DB::transaction(function () use ($user, $post, $request) {
-            $user->posts()->save($post);
-            $post->categories()->attach($request->get('categories'));
-        });
-
-        return $post;
-    }
-
     public function update(Post $post, Request $request): Post
     {
         $post->fill($request->only(self::FILLABLE_KEYS));
@@ -59,7 +44,7 @@ class PostService
     }
 
     /**
-     * @throw ModelNotFoundException
+     * @throws ModelNotFoundException
      */
     public function getByPermalink(string $permalink): Post
     {
