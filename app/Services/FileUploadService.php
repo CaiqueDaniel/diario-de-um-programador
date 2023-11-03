@@ -10,6 +10,7 @@ class FileUploadService
 {
     private const DISK = 'public';
 
+    /** @throws CannotWriteFileException */
     public function upload(UploadedFile $file, string $publicPath): string
     {
         $newThumbnail = $file->storePublicly($publicPath, self::DISK);

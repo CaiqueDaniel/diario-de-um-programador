@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Actions\Posts\ListPaginatedPostsByUserAction;
+use App\Actions\Posts\UpdatePostAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Get\SearchRequest;
 use App\Http\Requests\Post\PostRequest;
@@ -48,11 +49,11 @@ class PostController extends Controller
         return view('pages.admin.post.form', compact('post'));
     }
 
-    public function update(Post $post, PostRequest $request): RedirectResponse
+    public function update(Post $post, PostRequest $request, UpdatePostAction $updatePost): RedirectResponse
     {
-        $this->postService->update($post, $request);
+        $updatePost->execute($request->toDto(), $post);
 
-        session()->flash('message', 'Artigo editado com sucesso');
+        session()->flash('message', __('Article successfully updated'));
 
         return redirect()->route('admin.post.index');
     }
