@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Actions\Posts\DeletePostAction;
 use App\Actions\Posts\ListPaginatedPostsByUserAction;
 use App\Actions\Posts\UpdatePostAction;
 use App\Http\Controllers\Controller;
@@ -72,11 +73,11 @@ class PostController extends Controller
         return response(null);
     }
 
-    public function destroy(Post $post): RedirectResponse
+    public function destroy(Post $post, DeletePostAction $deletePost): RedirectResponse
     {
-        $this->postService->destroy($post);
+        $deletePost->execute($post);
 
-        session()->flash('message', 'Artigo removido com sucesso');
+        session()->flash('message', __('Article successfully deleted'));
 
         return redirect()->route('admin.post.index');
     }
