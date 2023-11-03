@@ -2,22 +2,15 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Actions\Posts\GetPostByPermalinkAction;
 use App\Http\Controllers\Controller;
-use App\Services\PostService;
 use Illuminate\View\View;
 
 class PostController extends Controller
 {
-    private PostService $postService;
-
-    public function __construct(PostService $postService)
+    public function show(string $slug, GetPostByPermalinkAction $getPostByPermalink): View
     {
-        $this->postService = $postService;
-    }
-
-    public function show(string $slug): View
-    {
-        $post = $this->postService->getByPermalink($slug);
+        $post = $getPostByPermalink->execute($slug);
 
         return view('pages.web.post.post', compact('post'));
     }

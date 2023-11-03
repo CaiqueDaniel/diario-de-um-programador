@@ -2,26 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Actions\Posts\ListPaginatedPostsByUserAction;
+use App\Actions\Posts\{CreatePostAction, UpdatePostAction, DeletePostAction, ListPaginatedPostsByUserAction};
+use App\Models\{Post, User};
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Get\SearchRequest;
 use App\Http\Requests\Post\PostRequest;
-use App\Models\Post;
-use App\Models\User;
-use App\Services\PostService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
 class PostController extends Controller
 {
-    private PostService $postService;
-
-    public function __construct(PostService $postService)
-    {
-        $this->postService = $postService;
-    }
-
     public function index(SearchRequest $request, ListPaginatedPostsByUserAction $listPaginatedPostsByUserAction): View
     {
         /** @var User $user */
@@ -31,14 +22,14 @@ class PostController extends Controller
         return view('pages.admin.post.listing', compact('response'));
     }
 
-    public function store(PostRequest $request): RedirectResponse
+    public function store(PostRequest $request, CreatePostAction $createPost): RedirectResponse
     {
         /** @var User $user */
         $user = auth()->user();
 
-        $this->postService->store($user, $request);
+        $createPost->execute($request->toDto(), $user);
 
-        session()->flash('message', 'Artigo criado com sucesso');
+        session()->flash('message', __('Article successfully created'));
 
         return redirect()->route('admin.post.index');
     }
@@ -48,11 +39,11 @@ class PostController extends Controller
         return view('pages.admin.post.form', compact('post'));
     }
 
-    public function update(Post $post, PostRequest $request): RedirectResponse
+    public function update(Post $post, PostRequest $request, UpdatePostAction $updatePost): RedirectResponse
     {
-        $this->postService->update($post, $request);
+        $updatePost->execute($request->toDto(), $post);
 
-        session()->flash('message', 'Artigo editado com sucesso');
+        session()->flash('message', __('Article successfully updated'));
 
         return redirect()->route('admin.post.index');
     }
@@ -71,11 +62,11 @@ class PostController extends Controller
         return response(null);
     }
 
-    public function destroy(Post $post): RedirectResponse
+    public function destroy(Post $post, DeletePostAction $deletePost): RedirectResponse
     {
-        $this->postService->destroy($post);
+        $deletePost->execute($post);
 
-        session()->flash('message', 'Artigo removido com sucesso');
+        session()->flash('message', __('Article successfully deleted'));
 
         return redirect()->route('admin.post.index');
     }

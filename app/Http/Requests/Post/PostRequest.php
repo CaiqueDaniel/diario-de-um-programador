@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Post;
 
+use App\Dtos\Post\PostDto;
 use App\Models\Post;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -25,5 +26,16 @@ class PostRequest extends FormRequest
             'thumbnail' => $thumbnailRules,
             'categories.*' => ['nullable', 'numeric', 'distinct']
         ];
+    }
+
+    public function toDto(): PostDto
+    {
+        return new PostDto(
+            $this->get('title'),
+            $this->get('article'),
+            $this->get('subtitle'),
+            $this->file('thumbnail'),
+            $this->get('categories') ?? [],
+        );
     }
 }
