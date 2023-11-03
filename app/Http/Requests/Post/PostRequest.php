@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Post;
 
-use App\Dtos\Post\CreatePostDto;
+use App\Dtos\Post\PostDto;
 use App\Models\Post;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -28,9 +28,9 @@ class PostRequest extends FormRequest
         ];
     }
 
-    public function toDto(): CreatePostDto
+    public function toDto(): PostDto
     {
-        return new CreatePostDto(
+        return new PostDto(
             $this->get('title'),
             $this->get('article'),
             $this->get('subtitle'),

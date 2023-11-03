@@ -2,7 +2,7 @@
 
 namespace App\Actions\Posts;
 
-use App\Dtos\Post\CreatePostDto;
+use App\Dtos\Post\PostDto;
 use App\Models\Post;
 use App\Models\User;
 use App\Services\FileUploadService;
@@ -17,7 +17,7 @@ class CreatePostAction
     }
 
     /** @throws CannotWriteFileException*/
-    public function execute(CreatePostDto $dto, User $user): Post
+    public function execute(PostDto $dto, User $user): Post
     {
         $post = new Post([
             'title' => $dto->title,

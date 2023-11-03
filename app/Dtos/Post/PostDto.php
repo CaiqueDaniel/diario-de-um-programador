@@ -5,7 +5,7 @@ namespace App\Dtos\Post;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\UploadedFile;
 
-class CreatePostDto implements Arrayable
+class PostDto implements Arrayable
 {
     public function __construct(
         public readonly string $title,
